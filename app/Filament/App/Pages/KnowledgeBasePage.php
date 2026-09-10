@@ -44,7 +44,6 @@ class KnowledgeBasePage extends Page
 
     public function getCategories()
     {
-        /** @phpstan-ignore-next-line */
         return KbCategory::query()
             ->where('is_active', true)
             ->whereNull('parent_id')
@@ -108,7 +107,7 @@ class KnowledgeBasePage extends Page
 
     public function submitFeedback(int $articleId, bool $isHelpful): void
     {
-        $article = KbArticle::findOrFail($articleId); /** @phpstan-ignore staticMethod.notFound */
+        $article = KbArticle::findOrFail($articleId);
         app(KnowledgeBaseService::class)->addFeedback(
             $article,
             $isHelpful,

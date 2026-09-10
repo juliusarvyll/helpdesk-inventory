@@ -20,7 +20,7 @@ class SlaComplianceWidget extends ChartWidget
 
     protected function getData(): array
     {
-        $totalWithSla = TicketSla::count(); /** @phpstan-ignore staticMethod.notFound */
+        $totalWithSla = TicketSla::count();
         if ($totalWithSla === 0) {
             return [
                 'datasets' => [
@@ -36,7 +36,7 @@ class SlaComplianceWidget extends ChartWidget
             ];
         }
 
-        $breached = TicketSla::where('first_response_breached', true) /** @phpstan-ignore staticMethod.notFound */
+        $breached = TicketSla::where('first_response_breached', true)
             ->orWhere('resolution_breached', true)
             ->count();
 

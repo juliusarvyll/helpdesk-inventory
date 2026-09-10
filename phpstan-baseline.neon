@@ -12,3 +12,67 @@ parameters:
 		  path: app/Console/Commands/RecalculateSlaCommand.php
 		- message: '#Instanceof between string and BackedEnum will always evaluate to false#'
 		  path: app/Services/SlaService.php
+		# Vendor code: pre-existing phpstan conditions surfaced by Tasks 8-10
+		# (Admin/Agent/App-panel porting) plus 2 conditions Task 4 already saw in
+		# app/Listeners/ProcessInboundEmail.php but never baselined, plus
+		# app/Concerns/HasSla.php (vendor's own dead trait) and the remaining
+		# Listener defensive-null-guard conditions matching the RecalculateSlaCommand/
+		# SlaService pattern above. See Task 13 progress-ledger entry for the full
+		# investigation (28 entries covering 29 errors -- 1 entry matches 2
+		# occurrences of an identical message in the same file).
+		- message: '#^Trait App\\Concerns\\HasSla is used zero times and is not analysed\.$#'
+		  path: app/Concerns/HasSla.php
+		- message: '#^Parameter \#1 \$article of method App\\Services\\KnowledgeBaseService\:\:archiveArticle\(\) expects App\\Models\\KbArticle, Illuminate\\Database\\Eloquent\\Model\|int\|string\|null given\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Pages/EditKbArticle.php
+		- message: '#^Parameter \#1 \$article of method App\\Services\\KnowledgeBaseService\:\:publishArticle\(\) expects App\\Models\\KbArticle, Illuminate\\Database\\Eloquent\\Model\|int\|string\|null given\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Pages/EditKbArticle.php
+		- message: '#^Parameter \#1 \$article of method App\\Services\\KnowledgeBaseService\:\:updateArticle\(\) expects App\\Models\\KbArticle, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Pages/EditKbArticle.php
+		- message: '#^Using nullsafe property access "\?\-\>helpful_count" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Schemas/KbArticleForm.php
+		- message: '#^Using nullsafe property access "\?\-\>not_helpful_count" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Schemas/KbArticleForm.php
+		- message: '#^Using nullsafe property access "\?\-\>view_count" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Admin/Resources/KbArticles/Schemas/KbArticleForm.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\TicketService\:\:update\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/Pages/EditTicket.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\CommentService\:\:addNote\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/RelationManagers/CommentsRelationManager.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\CommentService\:\:addReply\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/RelationManagers/CommentsRelationManager.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\TicketService\:\:addWatcher\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/RelationManagers/WatchersRelationManager.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\TicketService\:\:removeWatcher\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/RelationManagers/WatchersRelationManager.php
+		- message: '#^Using nullsafe property access "\?\-\>reference_number" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/Schemas/TicketForm.php
+		- message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Admin/Resources/Tickets/Schemas/TicketInfolist.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\TicketService\:\:update\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Agent/Resources/Tickets/Pages/EditTicket.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\CommentService\:\:addNote\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Agent/Resources/Tickets/RelationManagers/CommentsRelationManager.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\CommentService\:\:addReply\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/Agent/Resources/Tickets/RelationManagers/CommentsRelationManager.php
+		- message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+		  path: app/Filament/Agent/Resources/Tickets/Schemas/TicketForm.php
+		- message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/Agent/Resources/Tickets/Schemas/TicketForm.php
+		- message: '#^Using nullsafe property access "\?\-\>description" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/App/Resources/ServiceRequests/Pages/CreateServiceRequest.php
+		- message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+		  path: app/Filament/App/Resources/ServiceRequests/Pages/CreateServiceRequest.php
+		- message: '#^Parameter \#1 \$ticket of method App\\Services\\CommentService\:\:addReply\(\) expects App\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given\.$#'
+		  path: app/Filament/App/Resources/Tickets/RelationManagers/CommentsRelationManager.php
+		- message: '#^Ternary operator condition is always false\.$#'
+		  path: app/Listeners/ProcessInboundEmail.php
+		- message: '#^Ternary operator condition is always true\.$#'
+		  path: app/Listeners/ProcessInboundEmail.php
+		- message: '#^Left side of && is always true\.$#'
+		  path: app/Listeners/SendCommentAddedNotification.php
+		- message: '#^Negated boolean expression is always false\.$#'
+		  path: app/Listeners/SendCommentAddedNotification.php
+		- message: '#^Negated boolean expression is always false\.$#'
+		  path: app/Listeners/SendTicketCreatedNotification.php
+		- message: '#^Negated boolean expression is always false\.$#'
+		  path: app/Listeners/SendTicketStatusChangedNotification.php

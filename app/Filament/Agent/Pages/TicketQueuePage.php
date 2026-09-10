@@ -43,7 +43,6 @@ class TicketQueuePage extends Page implements HasTable
 
     public static function getNavigationBadge(): ?string
     {
-        /** @phpstan-ignore staticMethod.notFound */
         $count = Ticket::whereNull('assigned_to_id')
             ->whereIn('status', [TicketStatus::Open->value, TicketStatus::Pending->value])
             ->count();

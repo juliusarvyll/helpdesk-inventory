@@ -38,7 +38,6 @@ class TicketResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        /** @phpstan-ignore staticMethod.notFound */
         $count = static::getModel()::where('status', TicketStatus::Open)->count();
 
         return $count ? (string) $count : null;

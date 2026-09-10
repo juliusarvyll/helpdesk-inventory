@@ -18,7 +18,7 @@ class MyTicketsOverviewWidget extends StatsOverviewWidget
         /** @var Model $user */
         $user = auth()->guard()->user();
 
-        $myTicketsQuery = Ticket::where('user_id', $user->getKey()) /** @phpstan-ignore staticMethod.notFound */
+        $myTicketsQuery = Ticket::where('user_id', $user->getKey())
             ->where('user_type', $user->getMorphClass());
 
         return [
