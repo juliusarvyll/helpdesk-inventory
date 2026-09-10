@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Mail\Transport\MicrosoftGraphTransport;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\Filament\AgentPanelProvider;
 use App\Providers\Filament\AppPanelProvider;
@@ -10,6 +11,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -49,5 +51,12 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Model::automaticallyEagerLoadRelationships();
+
+        Mail::extend('graph', fn () => new MicrosoftGraphTransport(
+            config('services.azure.tenant_id'),
+            config('services.azure.client_id'),
+            config('services.azure.client_secret'),
+            config('mail.from.address'),
+        ));
     }
 }
