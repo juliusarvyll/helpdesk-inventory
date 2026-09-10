@@ -25,7 +25,7 @@
         "jeffersongoncalves/filament-logo": "^3.0",
         "jeffersongoncalves/filament-pwa": "^3.0",
         "jeffersongoncalves/filament-sensible-defaults": "^3.0",
-        "jeffersongoncalves/filament-service-desk": "^3.0",
+        "jeffersongoncalves/laravel-webhook-signatures": "^1.1",
         "joaopaulolndev/filament-edit-profile": "^3.0",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
