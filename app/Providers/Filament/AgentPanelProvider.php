@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Agent\Pages\Auth\Login;
+use App\Filament\Agent\ServiceDeskPlugin;
 use Filament\Actions\Action;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -22,7 +23,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use JeffersonGoncalves\Filament\Pwa\FilamentPwaPlugin;
-use JeffersonGoncalves\FilamentServiceDesk\ServiceDeskAgentPlugin;
 use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
 
@@ -69,7 +69,7 @@ class AgentPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentPwaPlugin::make(),
-                ServiceDeskAgentPlugin::make()
+                ServiceDeskPlugin::make()
                     ->knowledgeBase(true)
                     ->sla(true)
                     ->emailChannels(true)

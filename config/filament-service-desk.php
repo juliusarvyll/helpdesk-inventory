@@ -1,25 +1,25 @@
 <?php
 
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\BusinessHoursSchedules\BusinessHoursScheduleResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\CannedResponses\CannedResponseResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\Categories\CategoryResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\Departments\DepartmentResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\EmailChannels\EmailChannelResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\EscalationRules\EscalationRuleResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\KbArticles\KbArticleResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\KbCategories\KbCategoryResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\ServiceCategories\ServiceCategoryResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\Services\ServiceResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\SlaPolicies\SlaPolicyResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\Tags\TagResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Resources\Tickets\TicketResource;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Widgets\ServiceDeskOverviewWidget;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Widgets\SlaComplianceWidget;
-use JeffersonGoncalves\FilamentServiceDesk\Admin\Widgets\TicketsByDepartmentWidget;
-use JeffersonGoncalves\FilamentServiceDesk\Agent\Widgets\AgentTicketStatsWidget;
-use JeffersonGoncalves\FilamentServiceDesk\Agent\Widgets\SlaBreachWidget;
-use JeffersonGoncalves\FilamentServiceDesk\User\Resources\ServiceRequests\ServiceRequestResource;
-use JeffersonGoncalves\FilamentServiceDesk\User\Widgets\MyTicketsOverviewWidget;
+use App\Filament\Admin\Resources\BusinessHoursSchedules\BusinessHoursScheduleResource;
+use App\Filament\Admin\Resources\CannedResponses\CannedResponseResource;
+use App\Filament\Admin\Resources\Categories\CategoryResource;
+use App\Filament\Admin\Resources\Departments\DepartmentResource;
+use App\Filament\Admin\Resources\EmailChannels\EmailChannelResource;
+use App\Filament\Admin\Resources\EscalationRules\EscalationRuleResource;
+use App\Filament\Admin\Resources\KbArticles\KbArticleResource;
+use App\Filament\Admin\Resources\KbCategories\KbCategoryResource;
+use App\Filament\Admin\Resources\ServiceCategories\ServiceCategoryResource;
+use App\Filament\Admin\Resources\Services\ServiceResource;
+use App\Filament\Admin\Resources\SlaPolicies\SlaPolicyResource;
+use App\Filament\Admin\Resources\Tags\TagResource;
+use App\Filament\Admin\Resources\Tickets\TicketResource;
+use App\Filament\Admin\Widgets\ServiceDeskOverviewWidget;
+use App\Filament\Admin\Widgets\SlaComplianceWidget;
+use App\Filament\Admin\Widgets\TicketsByDepartmentWidget;
+use App\Filament\Agent\Widgets\AgentTicketStatsWidget;
+use App\Filament\Agent\Widgets\SlaBreachWidget;
+use App\Filament\App\Resources\ServiceRequests\ServiceRequestResource;
+use App\Filament\App\Widgets\MyTicketsOverviewWidget;
 
 return [
 
@@ -64,8 +64,8 @@ return [
         'navigation_icon' => 'heroicon-o-headset',
         'navigation_sort' => null,
         'resources' => [
-            'ticket' => JeffersonGoncalves\FilamentServiceDesk\Agent\Resources\Tickets\TicketResource::class,
-            'canned_response' => JeffersonGoncalves\FilamentServiceDesk\Agent\Resources\CannedResponses\CannedResponseResource::class,
+            'ticket' => App\Filament\Agent\Resources\Tickets\TicketResource::class,
+            'canned_response' => App\Filament\Agent\Resources\CannedResponses\CannedResponseResource::class,
         ],
         'widgets' => [
             AgentTicketStatsWidget::class,
@@ -83,7 +83,7 @@ return [
         'navigation_icon' => 'heroicon-o-ticket',
         'navigation_sort' => null,
         'resources' => [
-            'ticket' => JeffersonGoncalves\FilamentServiceDesk\User\Resources\Tickets\TicketResource::class,
+            'ticket' => App\Filament\App\Resources\Tickets\TicketResource::class,
             'service_request' => ServiceRequestResource::class,
         ],
         'widgets' => [

@@ -2,24 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\BusinessHoursSchedule;
+use App\Models\BusinessHoursTimeSlot;
+use App\Models\CannedResponse;
+use App\Models\Category;
+use App\Models\Department;
+use App\Models\KbArticle;
+use App\Models\KbCategory;
 use App\Models\Operator;
+use App\Models\Service;
+use App\Models\ServiceCategory;
+use App\Models\SlaPolicy;
+use App\Models\SlaTarget;
+use App\Models\Tag;
+use App\Models\Ticket;
+use App\Models\TicketComment;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use JeffersonGoncalves\ServiceDesk\Models\BusinessHoursSchedule;
-use JeffersonGoncalves\ServiceDesk\Models\BusinessHoursTimeSlot;
-use JeffersonGoncalves\ServiceDesk\Models\CannedResponse;
-use JeffersonGoncalves\ServiceDesk\Models\Category;
-use JeffersonGoncalves\ServiceDesk\Models\Department;
-use JeffersonGoncalves\ServiceDesk\Models\KbArticle;
-use JeffersonGoncalves\ServiceDesk\Models\KbCategory;
-use JeffersonGoncalves\ServiceDesk\Models\Service;
-use JeffersonGoncalves\ServiceDesk\Models\ServiceCategory;
-use JeffersonGoncalves\ServiceDesk\Models\SlaPolicy;
-use JeffersonGoncalves\ServiceDesk\Models\SlaTarget;
-use JeffersonGoncalves\ServiceDesk\Models\Tag;
-use JeffersonGoncalves\ServiceDesk\Models\Ticket;
-use JeffersonGoncalves\ServiceDesk\Models\TicketComment;
 
 class ServiceDeskSeeder extends Seeder
 {
