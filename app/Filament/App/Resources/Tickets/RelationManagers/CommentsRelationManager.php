@@ -1,0 +1,59 @@
+<?php
+
+namespace App\Filament\App\Resources\Tickets\RelationManagers;
+
+use App\Services\CommentService;
+use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+class CommentsRelationManager extends RelationManager
+{
+    protected static string $relationship = 'comments';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('filament-service-desk::service-desk.relations.comments');
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordTitleAttribute('body')
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('is_internal', false))
+            ->columns([
+                Tables\Columns\TextColumn::make('author.name')
+                    ->label(__('filament-service-desk::service-desk.fields.author')),
+                Tables\Columns\TextColumn::make('body')
+                    ->label(__('filament-service-desk::service-desk.fields.body'))
+                    ->html()
+                    ->limit(150),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('filament-service-desk::service-desk.fields.created_at'))
+                    ->dateTime()
+                    ->sortable(),
+            ])
+            ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                Actions\Action::make('reply')
+                    ->label(__('filament-service-desk::service-desk.actions.reply'))
+                    ->schema([
+                        Forms\Components\RichEditor::make('body')
+                            ->label(__('filament-service-desk::service-desk.fields.body'))
+                            ->required(),
+                    ])
+                    ->action(function (array $data) {
+                        app(CommentService::class)->addReply(
+                            $this->getOwnerRecord(),
+                            auth()->guard()->user(),
+                            $data['body'],
+                        );
+                    }),
+            ])
+            ->recordActions([]);
+    }
+}

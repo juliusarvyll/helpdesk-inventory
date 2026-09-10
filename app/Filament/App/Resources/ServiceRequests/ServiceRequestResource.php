@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Filament\App\Resources\ServiceRequests;
+
+use App\Filament\App\Resources\ServiceRequests\Schemas\ServiceRequestInfolist;
+use App\Filament\App\Resources\ServiceRequests\Tables\ServiceRequestsTable;
+use App\Models\ServiceRequest;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+class ServiceRequestResource extends Resource
+{
+    protected static ?string $model = ServiceRequest::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
+
+    protected static ?int $navigationSort = 5;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('filament-service-desk::service-desk.navigation.user.group');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('filament-service-desk::service-desk.resources.service_request.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament-service-desk::service-desk.resources.service_request.plural_label');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        /** @var Model $user */
+        $user = auth()->guard()->user();
+
+        return parent::getEloquentQuery()
+            ->where('requester_id', $user->getKey())
+            ->where('requester_type', $user->getMorphClass());
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ServiceRequestInfolist::configure($schema);
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema->columns(null)->schema([]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ServiceRequestsTable::configure($table);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListServiceRequests::route('/'),
+            'create' => Pages\CreateServiceRequest::route('/create'),
+            'view' => Pages\ViewServiceRequest::route('/{record}'),
+        ];
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-service-desk.user.resources.service_request') !== null;
+    }
+}
