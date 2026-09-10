@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Concerns;
+
+use App\Models\Department;
+use App\Models\Ticket;
+use App\Models\TicketHistory;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
+/**
+ * @property-read Collection<int, Ticket> $serviceDeskAssignedTickets
+ * @property-read Collection<int, Department> $serviceDeskDepartments
+ * @property-read Collection<int, TicketHistory> $serviceDeskHistory
+ */
+trait IsOperator
+{
+    use HasTickets;
+
+    /** @return MorphMany<Ticket, $this> */
+    public function serviceDeskAssignedTickets(): MorphMany
+    {
+        return $this->morphMany(Ticket::class, 'assigned_to');
+    }
+
+    /** @return MorphToMany<Department, $this> */
+    public function serviceDeskDepartments(): MorphToMany
+    {
+        return $this->morphToMany(
+            Department::class,
+            'operator',
+            'service_desk_department_operator',
+            null,
+            'department_id'
+        )->withPivot('role')->withTimestamps();
+    }
+
+    /** @return MorphMany<TicketHistory, $this> */
+    public function serviceDeskHistory(): MorphMany
+    {
+        return $this->morphMany(TicketHistory::class, 'performer');
+    }
+}

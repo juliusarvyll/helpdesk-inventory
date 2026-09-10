@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Concerns;
+
+use App\Models\Ticket;
+use App\Models\TicketComment;
+use App\Models\TicketWatcher;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+/**
+ * @property-read Collection<int, Ticket> $serviceDeskTickets
+ * @property-read Collection<int, TicketComment> $serviceDeskComments
+ * @property-read Collection<int, TicketWatcher> $serviceDeskWatching
+ */
+trait HasTickets
+{
+    /** @return MorphMany<Ticket, $this> */
+    public function serviceDeskTickets(): MorphMany
+    {
+        return $this->morphMany(Ticket::class, 'user');
+    }
+
+    /** @return MorphMany<TicketComment, $this> */
+    public function serviceDeskComments(): MorphMany
+    {
+        return $this->morphMany(TicketComment::class, 'author');
+    }
+
+    /** @return MorphMany<TicketWatcher, $this> */
+    public function serviceDeskWatching(): MorphMany
+    {
+        return $this->morphMany(TicketWatcher::class, 'watcher');
+    }
+}

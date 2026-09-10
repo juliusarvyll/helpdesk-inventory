@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\HasTickets;
 use App\Observers\UserObserver;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -22,7 +23,6 @@ use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-use JeffersonGoncalves\ServiceDesk\Concerns\HasTickets;
 
 /**
  * @property int $id

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Concerns\IsOperator;
 use App\Observers\OperatorObserver;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
@@ -19,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
-use JeffersonGoncalves\ServiceDesk\Concerns\IsOperator;
 
 #[ObservedBy(OperatorObserver::class)]
 class Operator extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, MustVerifyEmailContract
