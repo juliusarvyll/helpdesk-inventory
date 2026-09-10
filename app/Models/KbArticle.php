@@ -1,0 +1,168 @@
+<?php
+
+namespace App\Models;
+
+use App\Concerns\HasSlug;
+use App\Enums\ArticleStatus;
+use App\Enums\ArticleVisibility;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property int $category_id
+ * @property string $title
+ * @property string $slug
+ * @property string $content
+ * @property string|null $excerpt
+ * @property string $author_type
+ * @property int $author_id
+ * @property ArticleStatus $status
+ * @property ArticleVisibility $visibility
+ * @property string|null $seo_title
+ * @property string|null $seo_description
+ * @property string|null $seo_keywords
+ * @property int $view_count
+ * @property int $helpful_count
+ * @property int $not_helpful_count
+ * @property Carbon|null $published_at
+ * @property int $current_version
+ * @property array|null $metadata
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read KbCategory $category
+ * @property-read Model|\Eloquent $author
+ * @property-read Collection<int, KbArticleVersion> $versions
+ * @property-read Collection<int, KbArticleFeedback> $feedback
+ * @property-read Collection<int, KbArticle> $relatedArticles
+ * @property-read Collection<int, Ticket> $linkedTickets
+ * @property-read Collection<int, Tag> $tags
+ */
+class KbArticle extends Model
+{
+    use HasFactory, HasSlug, SoftDeletes;
+
+    protected $table = 'service_desk_kb_articles';
+
+    protected $fillable = [
+        'uuid',
+        'category_id',
+        'title',
+        'slug',
+        'content',
+        'excerpt',
+        'author_type',
+        'author_id',
+        'status',
+        'visibility',
+        'seo_title',
+        'seo_description',
+        'seo_keywords',
+        'view_count',
+        'helpful_count',
+        'not_helpful_count',
+        'published_at',
+        'current_version',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'status' => ArticleStatus::class,
+        'visibility' => ArticleVisibility::class,
+        'published_at' => 'datetime',
+        'metadata' => 'array',
+        'view_count' => 'integer',
+        'helpful_count' => 'integer',
+        'not_helpful_count' => 'integer',
+    ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (KbArticle $article) {
+            if (empty($article->uuid)) {
+                $article->uuid = (string) Str::uuid();
+            }
+        });
+    }
+
+    /** @return BelongsTo<KbCategory, $this> */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(KbCategory::class, 'category_id');
+    }
+
+    public function author(): MorphTo
+    {
+        return $this->morphTo('author');
+    }
+
+    /** @return HasMany<KbArticleVersion, $this> */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(KbArticleVersion::class, 'article_id');
+    }
+
+    /** @return HasMany<KbArticleFeedback, $this> */
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(KbArticleFeedback::class, 'article_id');
+    }
+
+    /** @return BelongsToMany<KbArticle, $this> */
+    public function relatedArticles(): BelongsToMany
+    {
+        return $this->belongsToMany(KbArticle::class, 'service_desk_kb_article_relations', 'article_id', 'related_article_id');
+    }
+
+    /** @return BelongsToMany<Ticket, $this> */
+    public function linkedTickets(): BelongsToMany
+    {
+        return $this->belongsToMany(Ticket::class, 'service_desk_kb_article_ticket', 'article_id', 'ticket_id')
+            ->withTimestamps();
+    }
+
+    /** @return MorphToMany<Tag, $this> */
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable', 'service_desk_taggables');
+    }
+
+    /** @param Builder<static> $query */
+    public function scopePublished(Builder $query): Builder
+    {
+        return $query->where('status', ArticleStatus::Published);
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeByVisibility(Builder $query, ArticleVisibility $visibility): Builder
+    {
+        return $query->where('visibility', $visibility);
+    }
+
+    public function incrementViewCount(): void
+    {
+        $this->increment('view_count');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function getSlugSource(): string
+    {
+        return 'title';
+    }
+}

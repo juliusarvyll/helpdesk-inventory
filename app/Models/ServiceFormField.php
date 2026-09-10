@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\FormFieldType;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property int $service_id
+ * @property string $name
+ * @property string $label
+ * @property FormFieldType $type
+ * @property bool $is_required
+ * @property array|null $options
+ * @property array|null $validation_rules
+ * @property string|null $placeholder
+ * @property string|null $help_text
+ * @property string|null $default_value
+ * @property int $sort_order
+ * @property array|null $metadata
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Service $service
+ */
+class ServiceFormField extends Model
+{
+    protected $table = 'service_desk_service_form_fields';
+
+    protected $fillable = [
+        'service_id',
+        'name',
+        'label',
+        'type',
+        'is_required',
+        'options',
+        'validation_rules',
+        'placeholder',
+        'help_text',
+        'default_value',
+        'sort_order',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'type' => FormFieldType::class,
+        'is_required' => 'boolean',
+        'options' => 'array',
+        'validation_rules' => 'array',
+        'sort_order' => 'integer',
+        'metadata' => 'array',
+    ];
+
+    /** @return BelongsTo<Service, $this> */
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class, 'service_id');
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('sort_order')->orderBy('name');
+    }
+}

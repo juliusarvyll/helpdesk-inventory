@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property string $timezone
+ * @property bool $is_default
+ * @property bool $is_active
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, BusinessHoursTimeSlot> $timeSlots
+ * @property-read Collection<int, Holiday> $holidays
+ * @property-read Collection<int, SlaPolicy> $slaPolicies
+ */
+class BusinessHoursSchedule extends Model
+{
+    protected $table = 'service_desk_business_hours_schedules';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'timezone',
+        'is_default',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_default' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+
+    /** @return HasMany<BusinessHoursTimeSlot, $this> */
+    public function timeSlots(): HasMany
+    {
+        return $this->hasMany(BusinessHoursTimeSlot::class, 'schedule_id');
+    }
+
+    /** @return HasMany<Holiday, $this> */
+    public function holidays(): HasMany
+    {
+        return $this->hasMany(Holiday::class, 'schedule_id');
+    }
+
+    /** @return HasMany<SlaPolicy, $this> */
+    public function slaPolicies(): HasMany
+    {
+        return $this->hasMany(SlaPolicy::class, 'business_hours_schedule_id');
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
+    /** @param Builder<static> $query */
+    public function scopeDefault(Builder $query): Builder
+    {
+        return $query->where('is_default', true);
+    }
+}

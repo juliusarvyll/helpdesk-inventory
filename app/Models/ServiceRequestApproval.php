@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\ApprovalStatus;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property int $service_request_id
+ * @property string $approver_type
+ * @property int $approver_id
+ * @property ApprovalStatus $status
+ * @property string|null $comment
+ * @property int $step_order
+ * @property Carbon|null $decided_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read ServiceRequest $serviceRequest
+ * @property-read Model|\Eloquent $approver
+ */
+class ServiceRequestApproval extends Model
+{
+    protected $table = 'service_desk_service_request_approvals';
+
+    protected $fillable = [
+        'service_request_id',
+        'approver_type',
+        'approver_id',
+        'status',
+        'comment',
+        'step_order',
+        'decided_at',
+    ];
+
+    protected $casts = [
+        'status' => ApprovalStatus::class,
+        'decided_at' => 'datetime',
+        'step_order' => 'integer',
+    ];
+
+    /** @return BelongsTo<ServiceRequest, $this> */
+    public function serviceRequest(): BelongsTo
+    {
+        return $this->belongsTo(ServiceRequest::class, 'service_request_id');
+    }
+
+    public function approver(): MorphTo
+    {
+        return $this->morphTo('approver');
+    }
+
+    public function approve(?string $comment = null): void
+    {
+        $this->status = ApprovalStatus::Approved;
+        $this->comment = $comment;
+        $this->decided_at = now();
+        $this->save();
+    }
+
+    public function reject(?string $comment = null): void
+    {
+        $this->status = ApprovalStatus::Rejected;
+        $this->comment = $comment;
+        $this->decided_at = now();
+        $this->save();
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === ApprovalStatus::Pending;
+    }
+}

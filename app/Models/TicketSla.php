@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Models;
+
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * @property int $id
+ * @property int $ticket_id
+ * @property int $sla_policy_id
+ * @property string $priority_at_assignment
+ * @property \Illuminate\Support\Carbon|null $first_response_due_at
+ * @property \Illuminate\Support\Carbon|null $next_response_due_at
+ * @property \Illuminate\Support\Carbon|null $resolution_due_at
+ * @property \Illuminate\Support\Carbon|null $first_responded_at
+ * @property \Illuminate\Support\Carbon|null $resolved_at
+ * @property bool $first_response_breached
+ * @property bool $next_response_breached
+ * @property bool $resolution_breached
+ * @property int $paused_minutes
+ * @property \Illuminate\Support\Carbon|null $paused_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Ticket $ticket
+ * @property-read SlaPolicy $slaPolicy
+ */
+class TicketSla extends Model
+{
+    protected $table = 'service_desk_ticket_sla';
+
+    protected $fillable = [
+        'ticket_id',
+        'sla_policy_id',
+        'priority_at_assignment',
+        'first_response_due_at',
+        'next_response_due_at',
+        'resolution_due_at',
+        'first_responded_at',
+        'resolved_at',
+        'first_response_breached',
+        'next_response_breached',
+        'resolution_breached',
+        'paused_minutes',
+        'paused_at',
+    ];
+
+    protected $casts = [
+        'first_response_due_at' => 'datetime',
+        'next_response_due_at' => 'datetime',
+        'resolution_due_at' => 'datetime',
+        'first_responded_at' => 'datetime',
+        'resolved_at' => 'datetime',
+        'first_response_breached' => 'boolean',
+        'next_response_breached' => 'boolean',
+        'resolution_breached' => 'boolean',
+        'paused_minutes' => 'integer',
+        'paused_at' => 'datetime',
+    ];
+
+    /** @return BelongsTo<Ticket, $this> */
+    public function ticket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id');
+    }
+
+    /** @return BelongsTo<SlaPolicy, $this> */
+    public function slaPolicy(): BelongsTo
+    {
+        return $this->belongsTo(SlaPolicy::class, 'sla_policy_id');
+    }
+
+    public function pause(): void
+    {
+        if ($this->isPaused()) {
+            return;
+        }
+
+        $this->update([
+            'paused_at' => Carbon::now(),
+        ]);
+    }
+
+    public function resume(): void
+    {
+        if (! $this->isPaused()) {
+            return;
+        }
+
+        $pausedMinutes = (int) $this->paused_at->diffInMinutes(Carbon::now());
+
+        $this->update([
+            'paused_minutes' => $this->paused_minutes + $pausedMinutes,
+            'paused_at' => null,
+        ]);
+    }
+
+    public function recordFirstResponse(): void
+    {
+        $this->update([
+            'first_responded_at' => Carbon::now(),
+        ]);
+    }
+
+    public function recordResolution(): void
+    {
+        $this->update([
+            'resolved_at' => Carbon::now(),
+        ]);
+    }
+
+    public function isPaused(): bool
+    {
+        return $this->paused_at !== null;
+    }
+}

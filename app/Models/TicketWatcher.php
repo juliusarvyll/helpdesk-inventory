@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property int $ticket_id
+ * @property string $watcher_type
+ * @property int $watcher_id
+ * @property Carbon|null $created_at
+ * @property-read Ticket $ticket
+ * @property-read Model|\Eloquent $watcher
+ */
+class TicketWatcher extends Model
+{
+    public $timestamps = false;
+
+    protected $table = 'service_desk_ticket_watchers';
+
+    protected $fillable = [
+        'ticket_id',
+        'watcher_type',
+        'watcher_id',
+        'created_at',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (TicketWatcher $watcher) {
+            if (empty($watcher->created_at)) {
+                $watcher->created_at = now();
+            }
+        });
+    }
+
+    /** @return BelongsTo<Ticket, $this> */
+    public function ticket(): BelongsTo
+    {
+        return $this->belongsTo(Ticket::class, 'ticket_id');
+    }
+
+    public function watcher(): MorphTo
+    {
+        return $this->morphTo('watcher');
+    }
+}

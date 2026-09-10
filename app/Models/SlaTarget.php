@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property int $sla_policy_id
+ * @property string $priority
+ * @property int|null $first_response_time
+ * @property int|null $next_response_time
+ * @property int|null $resolution_time
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read SlaPolicy $slaPolicy
+ */
+class SlaTarget extends Model
+{
+    protected $table = 'service_desk_sla_targets';
+
+    protected $fillable = [
+        'sla_policy_id',
+        'priority',
+        'first_response_time',
+        'next_response_time',
+        'resolution_time',
+    ];
+
+    /** @return BelongsTo<SlaPolicy, $this> */
+    public function slaPolicy(): BelongsTo
+    {
+        return $this->belongsTo(SlaPolicy::class, 'sla_policy_id');
+    }
+}

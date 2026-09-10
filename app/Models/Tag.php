@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Models;
+
+use App\Concerns\HasSlug;
+use Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $color
+ * @property string|null $description
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Ticket> $tickets
+ * @property-read Collection<int, KbArticle> $articles
+ * @property-read Collection<int, Service> $services
+ */
+class Tag extends Model
+{
+    use HasFactory, HasSlug;
+
+    protected $table = 'service_desk_tags';
+
+    /** @return Factory<self> */
+    protected static function newFactory(): Factory
+    {
+        return TagFactory::new();
+    }
+
+    protected $fillable = [
+        'name',
+        'slug',
+        'color',
+        'description',
+    ];
+
+    /** @return MorphToMany<Ticket, $this> */
+    public function tickets(): MorphToMany
+    {
+        return $this->morphedByMany(Ticket::class, 'taggable', 'service_desk_taggables');
+    }
+
+    /** @return MorphToMany<KbArticle, $this> */
+    public function articles(): MorphToMany
+    {
+        return $this->morphedByMany(KbArticle::class, 'taggable', 'service_desk_taggables');
+    }
+
+    /** @return MorphToMany<Service, $this> */
+    public function services(): MorphToMany
+    {
+        return $this->morphedByMany(Service::class, 'taggable', 'service_desk_taggables');
+    }
+}
