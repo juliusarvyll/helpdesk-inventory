@@ -52,7 +52,7 @@ class TicketAssignedNotification extends Notification implements ShouldQueue
             ]))
             ->withSymfonyMessage(function ($message) use ($ticket) {
                 $domain = parse_url(config('app.url', 'http://localhost'), PHP_URL_HOST) ?? 'localhost';
-                $messageId = "<{$ticket->uuid}-assigned-{$ticket->id}@{$domain}>";
+                $messageId = "{$ticket->uuid}-assigned-{$ticket->id}@{$domain}";
 
                 $headers = $message->getHeaders();
                 $headers->addTextHeader('X-ServiceDesk-Ticket-Ref', $ticket->reference_number);

@@ -47,7 +47,7 @@ class TicketClosedNotification extends Notification implements ShouldQueue
             ->line(__('service-desk::notifications.ticket_closed.info'))
             ->withSymfonyMessage(function ($message) use ($ticket) {
                 $domain = parse_url(config('app.url', 'http://localhost'), PHP_URL_HOST) ?? 'localhost';
-                $messageId = "<{$ticket->uuid}-closed-{$ticket->id}@{$domain}>";
+                $messageId = "{$ticket->uuid}-closed-{$ticket->id}@{$domain}";
 
                 $headers = $message->getHeaders();
                 $headers->addTextHeader('X-ServiceDesk-Ticket-Ref', $ticket->reference_number);
