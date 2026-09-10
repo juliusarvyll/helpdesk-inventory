@@ -1,0 +1,7 @@
+name: servicedeskkitv5
+php: '8.2'
+secured: true
+aliases: {  }
+services: {  }
+integrations:
+    forge: {  }
