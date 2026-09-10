@@ -1336,3 +1336,122 @@ php artisan tinker --execute='echo \DB::table("failed_jobs")->count();'
 - [ ] **Step 5: Report results**
 
 This task has no commit — it's a verification checklist. If all four checks pass, the migration is functionally complete. If any step still fails, treat it as a bug in whichever Task 1-13 copied the affected code and go fix that task's output directly (do not patch around it here).
+
+---
+
+## Task 15: Fix duplicate event-listener registration (found during Task 14's live smoke test)
+
+**Added after initial plan execution.** A live, non-mocked end-to-end check (creating a real ticket via `TicketService`, assigning it, then processing the real queue with `php artisan queue:work`) revealed that every listener in `app/Listeners/*.php` fires TWICE per event. Confirmed via `php artisan event:list`: e.g. `App\Events\TicketCreated` lists both `App\Listeners\SendTicketCreatedNotification (ShouldQueue)` (Laravel's automatic event discovery, which scans `app/Listeners/*.php` for public single-class-typed-parameter methods and auto-registers them — active by default in this Laravel version) AND `App\Listeners\SendTicketCreatedNotification@handle (ShouldQueue)` (Task 5's explicit `Event::listen()` call). This is a genuine regression introduced by this migration: the vendor package's listeners lived in `vendor/.../src/Listeners/`, a path Laravel's discovery never scans, so only explicit registration ever fired them. Moving them into the Laravel-idiomatic `app/Listeners/` (Task 3's deliberate choice) made them newly eligible for auto-discovery too, on top of the still-present explicit registration.
+
+None of Task 6's tests caught this (`Event::fake()`, `Notification::fake()`, and direct-instantiation tests all bypass or don't distinguish this).
+
+**Files:**
+- Modify: `bootstrap/app.php`
+
+**Interfaces:**
+- Consumes: nothing new
+- Produces: each event fires each of its listeners exactly once again, while preserving `config('service-desk.register_default_listeners')`'s ability to disable the explicit registrations (ruling out the alternative fix of deleting the explicit `Event::listen()` calls and relying on auto-discovery alone, which would silently break that toggle).
+
+- [ ] **Step 1: Reproduce and confirm the exact scope of the bug**
+
+```bash
+cd /home/ict/dev/testkit
+php artisan event:list | grep -B1 -A5 "TicketCreated \.\.\.\|TicketAssigned \.\.\.\|TicketStatusChanged \.\.\.\|CommentAdded \.\.\.\|InboundEmailReceived \.\.\."
+```
+Expected (the bug): each of these events lists its `App\Listeners\*` entries twice — once with `@handle` (or `@handleXxx` for `LogTicketHistory`, the subscriber) and once without a method suffix.
+
+- [ ] **Step 2: Disable Laravel's automatic event discovery**
+
+Edit `bootstrap/app.php`:
+```diff
+ use Illuminate\Foundation\Application;
+ use Illuminate\Foundation\Configuration\Exceptions;
+ use Illuminate\Foundation\Configuration\Middleware;
+
+ return Application::configure(basePath: dirname(__DIR__))
+     ->withRouting(
+         web: __DIR__.'/../routes/web.php',
+         commands: __DIR__.'/../routes/console.php',
+         health: '/up',
+     )
++    ->withEvents(discover: false)
+     ->withMiddleware(function (Middleware $middleware) {
+         //
+     })
+```
+
+- [ ] **Step 3: Verify the fix**
+
+```bash
+cd /home/ict/dev/testkit
+composer dump-autoload -o
+php artisan event:list | grep -B1 -A3 "TicketCreated \.\.\.\|TicketAssigned \.\.\.\|TicketStatusChanged \.\.\.\|CommentAdded \.\.\.\|InboundEmailReceived \.\.\."
+```
+Expected: each `App\Listeners\*` entry now appears exactly once per event (the `@handle`/`@handleXxx`-suffixed, explicitly-registered form only — the unsuffixed auto-discovered duplicate is gone).
+
+- [ ] **Step 4: Live re-verification — the same real end-to-end check that found the bug**
+
+```bash
+cd /home/ict/dev/testkit
+php artisan tinker --execute='
+$dept = \App\Models\Department::factory()->create();
+$user = \App\Models\User::factory()->create();
+$operator = \App\Models\Operator::factory()->create();
+$ticket = app(\App\Services\TicketService::class)->create([
+    "department_id" => $dept->id,
+    "title" => "Task 15 fix verification",
+    "description" => "Confirms each listener fires exactly once after disabling event auto-discovery.",
+], $user);
+app(\App\Services\TicketService::class)->assign($ticket, $operator, $operator);
+echo "jobs queued: " . \DB::table("jobs")->count() . "\n";
+'
+php artisan queue:work --stop-when-empty --tries=1 -v
+```
+Expected: exactly 2 outer listener jobs queued (1x `SendTicketCreatedNotification`, 1x `SendTicketAssignedNotification` — not 4), each producing exactly 1 inner notification-send job (2 total send attempts, not 4). The sends will still fail with the same unrelated `mailpit` DNS-resolution `TransportException` in this environment — that's expected and not this task's concern (it's an environment/mail-config issue, not a code defect; see the ledger). What matters is the *count*: 2 attempts, not 4.
+
+Clean up the test data afterward:
+```bash
+php artisan tinker --execute='
+\DB::table("failed_jobs")->truncate();
+\App\Models\Ticket::where("title", "Task 15 fix verification")->get()->each(fn ($t) => $t->forceDelete());
+'
+```
+
+- [ ] **Step 5: Run the full test suite**
+
+```bash
+cd /home/ict/dev/testkit
+php artisan test --compact
+```
+Expected: same as every prior task — all ServiceDesk tests pass, plus the one known pre-existing unrelated `ExampleTest` failure. (Task 6's tests use `Event::fake()`/`Notification::fake()`/direct instantiation, so they weren't sensitive to this bug and shouldn't change behavior now — this step just confirms disabling discovery didn't break anything else.)
+
+- [ ] **Step 6: Format and commit**
+
+```bash
+cd /home/ict/dev/testkit
+vendor/bin/pint --dirty --format agent
+git add bootstrap/app.php
+git commit -m "$(cat <<'EOF'
+Disable Laravel event auto-discovery to fix duplicate listener firing
+
+Every listener in app/Listeners/*.php was registered twice: once via
+ServiceDeskServiceProvider's explicit Event::listen()/Event::subscribe()
+calls, and again via Laravel's automatic event discovery (default-enabled,
+scans app/Listeners/*.php for public single-class-typed-parameter methods).
+The vendor package's listeners previously lived outside app/, where
+discovery never looked, so only explicit registration ever fired them;
+moving them into app/Listeners (Task 3) made them newly eligible for
+auto-discovery too, causing every ticket notification to be queued and
+sent twice. Found via a live, non-mocked end-to-end smoke test (event-fake
+and notification-fake based tests don't distinguish "sent once" from
+"sent twice").
+
+Disabling discovery (rather than deleting the explicit registrations)
+preserves the service-desk.register_default_listeners config toggle,
+which gates the explicit path.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01T2BixwMGpdG3DcDidTnZHa
+EOF
+)"
+```
