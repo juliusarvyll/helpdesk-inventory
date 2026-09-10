@@ -43,9 +43,14 @@ class AppPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/app/theme.css')
             ->defaultThemeMode(config('servicedeskkit.theme_mode', ThemeMode::Dark))
             ->discoverClusters(in: app_path('Filament/App/Clusters'), for: 'App\\Filament\\App\\Clusters')
-            ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
-            ->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
-            ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
+            // This panel has no resources/pages/widgets of its own outside the ServiceDesk
+            // plugin's scope (Pages/Auth/Login is wired explicitly via ->login() above and isn't
+            // a discoverable Page subclass anyway). Every resource, page, and widget under
+            // Filament/App/{Resources,Pages,Widgets} is registered explicitly and conditionally
+            // by ServiceDeskPlugin::register() (see app/Filament/App/ServiceDeskPlugin.php), so
+            // discoverResources()/discoverPages()/discoverWidgets() are intentionally omitted here
+            // — calling them would register those classes unconditionally, bypassing the plugin's
+            // config override map.
             ->pages([
                 Pages\Dashboard::class,
             ])

@@ -46,8 +46,20 @@ class AdminPanelProvider extends PanelProvider
             ->defaultThemeMode(config('servicedeskkit.theme_mode', ThemeMode::Dark))
             ->discoverClusters(in: app_path('Filament/Admin/Clusters'), for: 'App\\Filament\\Admin\\Clusters')
             ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
-            ->discoverResources(in: app_path('Filament/Admin/Resources'), for: 'App\\Filament\\Admin\\Resources')
-            ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
+            // Resources/{Admins,Users,Operators} predate the service-desk migration and are
+            // scanned individually here (rather than the whole Resources/ dir) so this panel's
+            // own resources stay auto-discovered without overlapping the 13 ServiceDesk resource
+            // directories, which ServiceDeskPlugin registers explicitly and conditionally
+            // (gated by ->sla()/->knowledgeBase()/->emailChannels()/->serviceCatalog() and
+            // config/filament-service-desk.php's override map). Scanning the whole directory here
+            // would register those resources unconditionally, bypassing both the toggles and the
+            // override map. See app/Filament/Admin/ServiceDeskPlugin.php.
+            ->discoverResources(in: app_path('Filament/Admin/Resources/Admins'), for: 'App\\Filament\\Admin\\Resources\\Admins')
+            ->discoverResources(in: app_path('Filament/Admin/Resources/Users'), for: 'App\\Filament\\Admin\\Resources\\Users')
+            ->discoverResources(in: app_path('Filament/Admin/Resources/Operators'), for: 'App\\Filament\\Admin\\Resources\\Operators')
+            // No non-ServiceDesk widgets live in Filament/Admin/Widgets — all 3 widgets there are
+            // registered explicitly (and conditionally) by ServiceDeskPlugin::register(), so this
+            // panel intentionally does not call discoverWidgets() for it.
             ->pages([
                 Pages\Dashboard::class,
             ])

@@ -43,9 +43,14 @@ class AgentPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/agent/theme.css')
             ->defaultThemeMode(config('servicedeskkit.theme_mode', ThemeMode::Dark))
             ->discoverClusters(in: app_path('Filament/Agent/Clusters'), for: 'App\\Filament\\Agent\\Clusters')
-            ->discoverPages(in: app_path('Filament/Agent/Pages'), for: 'App\\Filament\\Agent\\Pages')
-            ->discoverResources(in: app_path('Filament/Agent/Resources'), for: 'App\\Filament\\Agent\\Resources')
-            ->discoverWidgets(in: app_path('Filament/Agent/Widgets'), for: 'App\\Filament\\Agent\\Widgets')
+            // This panel has no resources/pages/widgets of its own outside the ServiceDesk
+            // plugin's scope (Pages/Auth/Login is wired explicitly via ->login() above and isn't
+            // a discoverable Page subclass anyway). Every resource, page, and widget under
+            // Filament/Agent/{Resources,Pages,Widgets} is registered explicitly and conditionally
+            // by ServiceDeskPlugin::register() (see app/Filament/Agent/ServiceDeskPlugin.php), so
+            // discoverResources()/discoverPages()/discoverWidgets() are intentionally omitted here
+            // — calling them would register those classes unconditionally, bypassing the plugin's
+            // config override map.
             ->pages([
                 Pages\Dashboard::class,
             ])
