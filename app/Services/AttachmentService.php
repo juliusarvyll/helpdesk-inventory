@@ -1,0 +1,124 @@
+<?php
+
+namespace App\Services;
+
+use App\Events\AttachmentAdded;
+use App\Events\AttachmentRemoved;
+use App\Exceptions\InvalidAttachmentException;
+use App\Models\Ticket;
+use App\Models\TicketAttachment;
+use App\Models\TicketComment;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
+class AttachmentService
+{
+    public function store(Ticket $ticket, UploadedFile $file, Model $uploadedBy, ?TicketComment $comment = null): TicketAttachment
+    {
+        $this->validate(
+            (string) $file->getClientOriginalExtension(),
+            (int) ceil(($file->getSize() ?: 0) / 1024)
+        );
+
+        $disk = config('service-desk.ticket.attachment_disk', 'local');
+        $path = config('service-desk.ticket.attachment_path', 'service-desk/attachments');
+
+        $filePath = $file->store(
+            $path.'/'.$ticket->uuid,
+            $disk
+        );
+
+        $attachment = TicketAttachment::create([
+            'ticket_id' => $ticket->id,
+            'comment_id' => $comment?->id,
+            'uploaded_by_type' => $uploadedBy->getMorphClass(),
+            'uploaded_by_id' => $uploadedBy->getKey(),
+            'file_name' => $file->getClientOriginalName(),
+            'file_path' => $filePath,
+            'disk' => $disk,
+            'mime_type' => $file->getMimeType(),
+            'file_size' => $file->getSize(),
+        ]);
+
+        event(new AttachmentAdded($ticket, $attachment));
+
+        return $attachment;
+    }
+
+    public function storeFromPath(Ticket $ticket, string $filePath, string $fileName, string $mimeType, int $fileSize, Model $uploadedBy, ?TicketComment $comment = null): TicketAttachment
+    {
+        $this->validate(
+            (string) pathinfo($fileName, PATHINFO_EXTENSION),
+            (int) ceil($fileSize / 1024)
+        );
+
+        $disk = config('service-desk.ticket.attachment_disk', 'local');
+        $storagePath = config('service-desk.ticket.attachment_path', 'service-desk/attachments');
+
+        $destination = $storagePath.'/'.$ticket->uuid.'/'.basename($filePath);
+        Storage::disk($disk)->put($destination, file_get_contents($filePath));
+
+        $attachment = TicketAttachment::create([
+            'ticket_id' => $ticket->id,
+            'comment_id' => $comment?->id,
+            'uploaded_by_type' => $uploadedBy->getMorphClass(),
+            'uploaded_by_id' => $uploadedBy->getKey(),
+            'file_name' => $fileName,
+            'file_path' => $destination,
+            'disk' => $disk,
+            'mime_type' => $mimeType,
+            'file_size' => $fileSize,
+        ]);
+
+        event(new AttachmentAdded($ticket, $attachment));
+
+        return $attachment;
+    }
+
+    public function delete(TicketAttachment $attachment, ?Model $removedBy = null): bool
+    {
+        Storage::disk($attachment->disk)->delete($attachment->file_path);
+
+        $ticket = $attachment->ticket;
+
+        event(new AttachmentRemoved($ticket, $attachment, $removedBy));
+
+        return $attachment->delete();
+    }
+
+    /**
+     * Validate an attachment's extension and size against the configured limits.
+     *
+     * @throws InvalidAttachmentException
+     */
+    public function validate(string $extension, int $sizeInKb): void
+    {
+        $allowed = config('service-desk.ticket.allowed_extensions', []);
+
+        if (! empty($allowed) && ! $this->isAllowedExtension($extension)) {
+            throw InvalidAttachmentException::disallowedExtension($extension);
+        }
+
+        if (! $this->isWithinSizeLimit($sizeInKb)) {
+            throw InvalidAttachmentException::fileTooLarge(
+                $sizeInKb,
+                (int) config('service-desk.ticket.max_file_size', 10240)
+            );
+        }
+    }
+
+    public function isAllowedExtension(string $extension): bool
+    {
+        $allowed = config('service-desk.ticket.allowed_extensions', []);
+
+        return in_array(strtolower($extension), $allowed);
+    }
+
+    public function isWithinSizeLimit(int $sizeInKb): bool
+    {
+        $maxSize = config('service-desk.ticket.max_file_size', 10240);
+
+        return $sizeInKb <= $maxSize;
+    }
+}

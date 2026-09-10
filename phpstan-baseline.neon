@@ -1,0 +1,14 @@
+parameters:
+	ignoreErrors:
+		# Vendor code: external optional dependencies
+		- message: '#Instantiated class Webklex\\PHPIMAP\\ClientManager not found#'
+		  path: app/Mail/ServiceDesk/Drivers/ImapDriver.php
+		- message: '#PHPDoc tag @var for variable \$clientManager contains unknown class#'
+		  path: app/Mail/ServiceDesk/Drivers/ImapDriver.php
+		- message: '#Call to method make\(\) on an unknown class#'
+		  path: app/Mail/ServiceDesk/Drivers/ImapDriver.php
+		# Vendor code: PHPDoc type annotation issues (vendor issues, not code quality)
+		- message: '#If condition is always true#'
+		  path: app/Console/Commands/RecalculateSlaCommand.php
+		- message: '#Instanceof between string and BackedEnum will always evaluate to false#'
+		  path: app/Services/SlaService.php
