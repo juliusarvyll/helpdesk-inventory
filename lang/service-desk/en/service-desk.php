@@ -193,56 +193,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Notifications
-    |--------------------------------------------------------------------------
-    */
-    'notifications' => [
-        'ticket_created' => [
-            'subject' => 'Ticket #:reference Created: :title',
-            'greeting' => 'Hello :name,',
-            'body' => 'A new ticket has been created with reference #:reference. Our team will review it and get back to you shortly.',
-            'action' => 'View Ticket',
-        ],
-        'ticket_status_changed' => [
-            'subject' => 'Ticket #:reference Status Updated',
-            'body' => 'The status of ticket #:reference (:title) has been changed to :status.',
-        ],
-        'ticket_assigned' => [
-            'subject' => 'Ticket #:reference Assigned to You',
-            'body' => 'Ticket #:reference (:title) has been assigned to you. Please review it at your earliest convenience.',
-        ],
-        'ticket_closed' => [
-            'subject' => 'Ticket #:reference Closed',
-            'body' => 'Ticket #:reference (:title) has been closed. If you believe this was done in error or need further assistance, you may reopen it.',
-        ],
-        'comment_added' => [
-            'subject' => 'New Comment on Ticket #:reference',
-            'body' => 'A new comment has been added to ticket #:reference (:title) by :author.',
-        ],
-        'sla_breached' => [
-            'subject' => 'SLA Breached on Ticket #:reference',
-            'body' => 'The :type SLA has been breached on ticket #:reference (:title). Immediate attention is required.',
-        ],
-        'sla_near_breach' => [
-            'subject' => 'SLA Near Breach on Ticket #:reference',
-            'body' => 'The :type SLA on ticket #:reference (:title) is approaching its deadline. Please take action to avoid a breach.',
-        ],
-        'escalation' => [
-            'subject' => 'Ticket #:reference Escalated',
-            'body' => 'Ticket #:reference (:title) has been escalated due to rule ":rule". Please review and take appropriate action.',
-        ],
-        'approval_requested' => [
-            'subject' => 'Approval Requested for Service Request #:reference',
-            'body' => 'Your approval is required for service request #:reference (:title). Please review and provide your decision.',
-        ],
-        'approval_decision' => [
-            'subject' => 'Approval Decision on Service Request #:reference',
-            'body' => 'The service request #:reference (:title) has been :decision by :approver.',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | General / Misc
     |--------------------------------------------------------------------------
     */

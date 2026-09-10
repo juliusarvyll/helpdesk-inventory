@@ -193,56 +193,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Notificacoes
-    |--------------------------------------------------------------------------
-    */
-    'notifications' => [
-        'ticket_created' => [
-            'subject' => 'Ticket #:reference Criado: :title',
-            'greeting' => 'Ola :name,',
-            'body' => 'Um novo ticket foi criado com a referencia #:reference. Nossa equipe ira analisa-lo e retornara em breve.',
-            'action' => 'Ver Ticket',
-        ],
-        'ticket_status_changed' => [
-            'subject' => 'Ticket #:reference - Status Atualizado',
-            'body' => 'O status do ticket #:reference (:title) foi alterado para :status.',
-        ],
-        'ticket_assigned' => [
-            'subject' => 'Ticket #:reference Atribuido a Voce',
-            'body' => 'O ticket #:reference (:title) foi atribuido a voce. Por favor, analise-o assim que possivel.',
-        ],
-        'ticket_closed' => [
-            'subject' => 'Ticket #:reference Fechado',
-            'body' => 'O ticket #:reference (:title) foi fechado. Se voce acredita que isso foi feito por engano ou precisa de mais ajuda, voce pode reabri-lo.',
-        ],
-        'comment_added' => [
-            'subject' => 'Novo Comentario no Ticket #:reference',
-            'body' => 'Um novo comentario foi adicionado ao ticket #:reference (:title) por :author.',
-        ],
-        'sla_breached' => [
-            'subject' => 'SLA Violado no Ticket #:reference',
-            'body' => 'O SLA de :type foi violado no ticket #:reference (:title). Atencao imediata e necessaria.',
-        ],
-        'sla_near_breach' => [
-            'subject' => 'SLA Proximo de Violacao no Ticket #:reference',
-            'body' => 'O SLA de :type no ticket #:reference (:title) esta se aproximando do prazo limite. Por favor, tome uma acao para evitar a violacao.',
-        ],
-        'escalation' => [
-            'subject' => 'Ticket #:reference Escalonado',
-            'body' => 'O ticket #:reference (:title) foi escalonado devido a regra ":rule". Por favor, analise e tome as medidas adequadas.',
-        ],
-        'approval_requested' => [
-            'subject' => 'Aprovacao Solicitada para Requisicao de Servico #:reference',
-            'body' => 'Sua aprovacao e necessaria para a requisicao de servico #:reference (:title). Por favor, analise e forneca sua decisao.',
-        ],
-        'approval_decision' => [
-            'subject' => 'Decisao de Aprovacao na Requisicao de Servico #:reference',
-            'body' => 'A requisicao de servico #:reference (:title) foi :decision por :approver.',
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Geral
     |--------------------------------------------------------------------------
     */

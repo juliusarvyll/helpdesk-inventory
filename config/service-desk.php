@@ -161,7 +161,7 @@ return [
     */
 
     'notifications' => [
-        'channels' => ['mail'],
+        'channels' => ['database', 'mail'],
 
         'notify_on' => [
             'ticket_created' => true,
