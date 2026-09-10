@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Notifications;
+
+use App\Models\ServiceRequestApproval;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+
+class ApprovalRequestedNotification extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    public function __construct(
+        public readonly ServiceRequestApproval $approval,
+    ) {
+        $this->queue = config('service-desk.notifications.queue', 'default');
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function via(object $notifiable): array
+    {
+        return config('service-desk.notifications.channels', ['mail']);
+    }
+
+    public function toMail(object $notifiable): MailMessage
+    {
+        $approval = $this->approval;
+        $serviceRequest = $approval->serviceRequest;
+        $service = $serviceRequest->service;
+
+        return (new MailMessage)
+            ->subject(__('service-desk::notifications.approval_requested.subject', [
+                'service' => $service->name,
+            ]))
+            ->greeting(__('service-desk::notifications.approval_requested.greeting'))
+            ->line(__('service-desk::notifications.approval_requested.body', [
+                'service' => $service->name,
+                /** @phpstan-ignore property.notFound */
+                'requester' => $serviceRequest->requester->name,
+            ]))
+            ->line(__('service-desk::notifications.approval_requested.action_required'));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        $serviceRequest = $this->approval->serviceRequest;
+
+        return [
+            'approval_id' => $this->approval->id,
+            'service_request_id' => $serviceRequest->id,
+            'service_request_uuid' => $serviceRequest->uuid,
+            'service_name' => $serviceRequest->service->name,
+            'step_order' => $this->approval->step_order,
+            'type' => 'approval_requested',
+        ];
+    }
+}
