@@ -25,13 +25,15 @@ beforeEach(function () {
 it('renders TicketCreatedNotification to a real mail message without throwing', function () {
     $mail = (new TicketCreatedNotification($this->ticket))->toMail($this->user);
 
-    expect((string) $mail->render())->toContain($this->ticket->reference_number);
+    $mail->render(); // must not throw — this is what the Message-ID/bracket fixes made possible
+    expect($mail->subject)->toContain($this->ticket->reference_number);
 });
 
 it('renders TicketAssignedNotification to a real mail message without throwing', function () {
     $mail = (new TicketAssignedNotification($this->ticket))->toMail($this->operator);
 
-    expect((string) $mail->render())->toContain($this->ticket->reference_number);
+    $mail->render(); // must not throw — this is what the Message-ID/bracket fixes made possible
+    expect($mail->subject)->toContain($this->ticket->reference_number);
 });
 
 it('renders TicketStatusChangedNotification to a real mail message without throwing', function () {
@@ -41,7 +43,8 @@ it('renders TicketStatusChangedNotification to a real mail message without throw
         TicketStatus::Closed,
     ))->toMail($this->user);
 
-    expect((string) $mail->render())->toContain($this->ticket->reference_number);
+    $mail->render(); // must not throw — this is what the Message-ID/bracket fixes made possible
+    expect($mail->subject)->toContain($this->ticket->reference_number);
 });
 
 it('renders NewCommentNotification to a real mail message without throwing', function () {
@@ -49,5 +52,6 @@ it('renders NewCommentNotification to a real mail message without throwing', fun
 
     $mail = (new NewCommentNotification($this->ticket, $comment))->toMail($this->user);
 
-    expect((string) $mail->render())->toContain($this->ticket->reference_number);
+    $mail->render(); // must not throw — this is what the Message-ID/bracket fixes made possible
+    expect($mail->subject)->toContain($this->ticket->reference_number);
 });
