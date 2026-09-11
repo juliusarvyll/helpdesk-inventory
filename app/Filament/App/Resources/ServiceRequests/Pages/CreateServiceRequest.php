@@ -82,7 +82,10 @@ class CreateServiceRequest extends CreateRecord
                                 ->maxLength(65535),
                         ]),
                 ])
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->cancelAction($this->getCancelFormAction())
+                    ->submitAction($this->getSubmitFormAction())
+                    ->alpineSubmitHandler("\$wire.{$this->getSubmitFormLivewireMethodName()}()"),
             ]);
     }
 
