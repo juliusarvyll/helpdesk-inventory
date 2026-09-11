@@ -149,6 +149,8 @@ return [
         'quantity' => 'Quantidade',
         'unit' => 'Unidade',
         'created_by' => 'Criado Por',
+        'inventory_items' => 'Itens de Inventário',
+        'inventory_item' => 'Item de Inventário',
     ],
 
     'sections' => [
@@ -192,6 +194,7 @@ return [
         'reply' => 'Responder',
         'publish' => 'Publicar',
         'archive' => 'Arquivar',
+        'add_inventory_item' => 'Adicionar Item',
     ],
 
     'filters' => [

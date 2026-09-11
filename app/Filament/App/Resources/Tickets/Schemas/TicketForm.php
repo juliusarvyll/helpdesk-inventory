@@ -7,6 +7,8 @@ use Filament\Forms;
 use Filament\Schemas;
 use Filament\Schemas\Schema;
 
+use function filled;
+
 class TicketForm
 {
     public static function configure(Schema $schema): Schema
@@ -50,6 +52,31 @@ class TicketForm
                             ->options(collect(TicketPriority::cases())->mapWithKeys(fn ($p) => [$p->value => $p->label()]))
                             ->default(TicketPriority::Medium->value)
                             ->required(),
+                        Forms\Components\Repeater::make('ticketInventoryItems')
+                            ->relationship()
+                            ->label(__('filament-service-desk::service-desk.fields.inventory_items'))
+                            ->defaultItems(0)
+                            ->schema([
+                                Forms\Components\Select::make('inventory_item_id')
+                                    ->label(__('filament-service-desk::service-desk.fields.inventory_item'))
+                                    ->relationship(
+                                        'inventoryItem',
+                                        'name',
+                                        fn ($query, Schemas\Components\Utilities\Get $get) => $query
+                                            ->where('department_id', $get('../../department_id'))
+                                    )
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                                Forms\Components\TextInput::make('quantity')
+                                    ->label(__('filament-service-desk::service-desk.fields.quantity'))
+                                    ->numeric()
+                                    ->minValue(0),
+                            ])
+                            ->columns(2)
+                            ->addActionLabel(__('filament-service-desk::service-desk.actions.add_inventory_item'))
+                            ->visible(fn (Schemas\Components\Utilities\Get $get) => filled($get('department_id')))
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
             ]);
