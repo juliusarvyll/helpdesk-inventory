@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Users\Schemas;
 
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -22,6 +23,12 @@ class UserForm
                         Toggle::make('status')
                             ->required()
                             ->autofocus(),
+                        Select::make('department_id')
+                            ->label(__('filament-service-desk::service-desk.fields.department'))
+                            ->relationship('department', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->nullable(),
                         TextInput::make('name')
                             ->required()
                             ->string()

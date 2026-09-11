@@ -15,8 +15,11 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -36,10 +39,13 @@ use Illuminate\Support\Facades\Storage;
  * @property array<array-key, mixed>|null $custom_fields
  * @property string|null $locale
  * @property string|null $theme_color
+ * @property int|null $department_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read Department|null $department
+ * @property-read Collection<int, InventoryItem> $inventoryItems
  *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
@@ -73,6 +79,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     use Notifiable;
 
     protected $fillable = [
+        'department_id',
         'status',
         'name',
         'email',
@@ -120,5 +127,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             'status' => 'boolean',
             'custom_fields' => 'array',
         ];
+    }
+
+    /** @return BelongsTo<Department, $this> */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /** @return HasMany<InventoryItem, $this> */
+    public function inventoryItems(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class, 'created_by_id');
     }
 }
