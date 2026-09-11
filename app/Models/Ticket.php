@@ -64,6 +64,8 @@ use Illuminate\Support\Str;
  * @property-read Collection<int, Tag> $tags
  * @property-read Collection<int, KbArticle> $linkedArticles
  * @property-read ServiceRequest|null $serviceRequest
+ * @property-read Collection<int, TicketInventoryItem> $ticketInventoryItems
+ * @property-read Collection<int, InventoryItem> $inventoryItems
  */
 class Ticket extends Model
 {
@@ -227,6 +229,26 @@ class Ticket extends Model
     public function serviceRequest(): HasOne
     {
         return $this->hasOne(ServiceRequest::class, 'ticket_id');
+    }
+
+    /** @return HasMany<TicketInventoryItem, $this> */
+    public function ticketInventoryItems(): HasMany
+    {
+        return $this->hasMany(TicketInventoryItem::class, 'ticket_id');
+    }
+
+    /** @return BelongsToMany<InventoryItem, $this> */
+    public function inventoryItems(): BelongsToMany
+    {
+        return $this->belongsToMany(InventoryItem::class, 'service_desk_ticket_inventory_items')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
+
+    /** @return BelongsToMany<InventoryItem, $this> */
+    public function inventoryItemsIncludingTrashed(): BelongsToMany
+    {
+        return $this->inventoryItems()->withTrashed();
     }
 
     /** @param Builder<static> $query */
