@@ -32,6 +32,7 @@ return [
         'service' => ['label' => 'Serviço', 'plural_label' => 'Serviços'],
         'service_category' => ['label' => 'Categoria de Serviço', 'plural_label' => 'Categorias de Serviço'],
         'service_request' => ['label' => 'Solicitação de Serviço', 'plural_label' => 'Solicitações de Serviço'],
+        'inventory_item' => ['label' => 'Item de Inventário', 'plural_label' => 'Itens de Inventário'],
     ],
 
     'fields' => [
@@ -144,6 +145,10 @@ return [
         'notes' => 'Observações',
         'first_response_due' => 'Primeira Resposta Até',
         'resolution_due' => 'Resolução Até',
+        'serial_number' => 'Número de Série',
+        'quantity' => 'Quantidade',
+        'unit' => 'Unidade',
+        'created_by' => 'Criado Por',
     ],
 
     'sections' => [
@@ -208,6 +213,8 @@ return [
 
     'messages' => [
         'auto_generated' => 'Gerado automaticamente ao salvar',
+        'no_inventory_items' => 'Nenhum item de inventário ainda.',
+        'no_department_assigned' => 'Você ainda não está atribuído a um departamento. Contate um administrador para começar.',
     ],
 
     'pages' => [

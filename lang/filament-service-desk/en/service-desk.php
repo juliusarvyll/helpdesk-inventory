@@ -32,6 +32,7 @@ return [
         'service' => ['label' => 'Service', 'plural_label' => 'Services'],
         'service_category' => ['label' => 'Service Category', 'plural_label' => 'Service Categories'],
         'service_request' => ['label' => 'Service Request', 'plural_label' => 'Service Requests'],
+        'inventory_item' => ['label' => 'Inventory Item', 'plural_label' => 'Inventory Items'],
     ],
 
     'fields' => [
@@ -144,6 +145,10 @@ return [
         'notes' => 'Notes',
         'first_response_due' => 'First Response Due',
         'resolution_due' => 'Resolution Due',
+        'serial_number' => 'Serial Number',
+        'quantity' => 'Quantity',
+        'unit' => 'Unit',
+        'created_by' => 'Created By',
     ],
 
     'sections' => [
@@ -208,6 +213,8 @@ return [
 
     'messages' => [
         'auto_generated' => 'Auto-generated on save',
+        'no_inventory_items' => 'No inventory items yet.',
+        'no_department_assigned' => 'You are not assigned to a department yet. Contact an administrator to get started.',
     ],
 
     'pages' => [

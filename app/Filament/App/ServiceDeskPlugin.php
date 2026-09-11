@@ -34,6 +34,7 @@ class ServiceDeskPlugin implements Plugin
 
         $enabled = [
             $resources['ticket'] ?? Resources\Tickets\TicketResource::class,
+            $resources['inventory_item'] ?? Resources\InventoryItems\InventoryItemResource::class,
         ];
 
         $pages = [];

@@ -18,6 +18,7 @@ use App\Filament\Admin\Widgets\SlaComplianceWidget;
 use App\Filament\Admin\Widgets\TicketsByDepartmentWidget;
 use App\Filament\Agent\Widgets\AgentTicketStatsWidget;
 use App\Filament\Agent\Widgets\SlaBreachWidget;
+use App\Filament\App\Resources\InventoryItems\InventoryItemResource;
 use App\Filament\App\Resources\ServiceRequests\ServiceRequestResource;
 use App\Filament\App\Widgets\MyTicketsOverviewWidget;
 
@@ -85,6 +86,7 @@ return [
         'resources' => [
             'ticket' => App\Filament\App\Resources\Tickets\TicketResource::class,
             'service_request' => ServiceRequestResource::class,
+            'inventory_item' => InventoryItemResource::class,
         ],
         'widgets' => [
             MyTicketsOverviewWidget::class,
