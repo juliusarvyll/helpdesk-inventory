@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InventoryItemStatus;
 use App\Enums\InventoryItemType;
 use Database\Factories\InventoryItemFactory;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,12 +18,19 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $department_id
  * @property int|null $created_by_id
+ * @property string|null $asset_tag
  * @property InventoryItemType $type
+ * @property string|null $category
  * @property string $name
  * @property string|null $description
+ * @property InventoryItemStatus $status
  * @property string|null $serial_number
  * @property int|null $quantity
  * @property string|null $unit
+ * @property string|null $location
+ * @property Carbon|null $purchased_at
+ * @property Carbon|null $warranty_expires_at
+ * @property array<string, mixed>|null $metadata
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -45,17 +53,28 @@ class InventoryItem extends Model
     protected $fillable = [
         'department_id',
         'created_by_id',
+        'asset_tag',
         'type',
+        'category',
         'name',
         'description',
+        'status',
         'serial_number',
         'quantity',
         'unit',
+        'location',
+        'purchased_at',
+        'warranty_expires_at',
+        'metadata',
     ];
 
     protected $casts = [
         'type' => InventoryItemType::class,
+        'status' => InventoryItemStatus::class,
         'quantity' => 'integer',
+        'purchased_at' => 'date',
+        'warranty_expires_at' => 'date',
+        'metadata' => 'array',
     ];
 
     /** @return BelongsTo<Department, $this> */

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->unsignedInteger('quantity')->nullable();
             $table->timestamps();
 
-            $table->unique(['ticket_id', 'inventory_item_id']);
+            $table->unique(['ticket_id', 'inventory_item_id'], 'sd_ticket_inventory_items_unique');
         });
     }
 
