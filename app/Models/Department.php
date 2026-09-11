@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, CannedResponse> $cannedResponses
  * @property-read Collection<int, EmailChannel> $emailChannels
  * @property-read Collection<int, User> $users
+ * @property-read Collection<int, InventoryItem> $inventoryItems
  */
 class Department extends Model
 {
@@ -84,6 +85,12 @@ class Department extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'department_id');
+    }
+
+    /** @return HasMany<InventoryItem, $this> */
+    public function inventoryItems(): HasMany
+    {
+        return $this->hasMany(InventoryItem::class, 'department_id');
     }
 
     /** @param Builder<static> $query */
