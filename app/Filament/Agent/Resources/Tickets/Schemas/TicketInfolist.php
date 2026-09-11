@@ -5,6 +5,7 @@ namespace App\Filament\Agent\Resources\Tickets\Schemas;
 use App\Enums\InventoryItemType;
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
+use App\Models\Ticket;
 use Filament\Infolists;
 use Filament\Schemas;
 use Filament\Schemas\Schema;
@@ -95,7 +96,7 @@ class TicketInfolist
                                     ])
                                     ->columns(3),
                             ])
-                            ->visible(fn ($record) => $record->inventoryItemsIncludingTrashed()->exists()),
+                            ->visible(fn (Ticket $record) => $record->inventoryItemsIncludingTrashed->isNotEmpty()),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])

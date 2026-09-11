@@ -123,7 +123,7 @@ class TicketInfolist
                                     ])
                                     ->columns(3),
                             ])
-                            ->visible(fn ($record) => $record->inventoryItemsIncludingTrashed()->exists()),
+                            ->visible(fn (Ticket $record) => $record->inventoryItemsIncludingTrashed->isNotEmpty()),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])

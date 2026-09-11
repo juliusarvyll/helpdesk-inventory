@@ -62,11 +62,11 @@ class TicketForm
                                     ->relationship(
                                         'inventoryItem',
                                         'name',
-                                        fn ($query, Schemas\Components\Utilities\Get $get) => $query
-                                            ->where('department_id', $get('../../department_id'))
+                                        fn ($query) => $query->where('department_id', auth()->guard()->user()->department_id)
                                     )
                                     ->searchable()
                                     ->preload()
+                                    ->distinct()
                                     ->required(),
                                 Forms\Components\TextInput::make('quantity')
                                     ->label(__('filament-service-desk::service-desk.fields.quantity'))

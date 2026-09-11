@@ -19,7 +19,15 @@ class InventoryItemForm
                     ->options(collect(InventoryItemType::cases())->mapWithKeys(fn ($t) => [$t->value => $t->label()]))
                     ->required()
                     ->live()
-                    ->native(false),
+                    ->native(false)
+                    ->afterStateUpdated(function (Schemas\Components\Utilities\Set $set, ?string $state) {
+                        if ($state === InventoryItemType::Asset->value) {
+                            $set('quantity', null);
+                            $set('unit', null);
+                        } elseif ($state === InventoryItemType::Stock->value) {
+                            $set('serial_number', null);
+                        }
+                    }),
                 Forms\Components\TextInput::make('name')
                     ->label(__('filament-service-desk::service-desk.fields.name'))
                     ->required()

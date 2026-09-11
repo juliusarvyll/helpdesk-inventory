@@ -41,6 +41,9 @@ class InventoryItemResource extends Resource
         /** @var User $user */
         $user = auth()->guard()->user();
 
+        // department_id is NOT NULL at the DB level, so when $user->department_id is null this
+        // compiles to `WHERE department_id IS NULL`, which correctly matches zero rows. If the
+        // column is ever made nullable, this scoping would start leaking department-less items.
         return parent::getEloquentQuery()
             ->where('department_id', $user->department_id);
     }

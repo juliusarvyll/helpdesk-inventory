@@ -16,7 +16,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $department_id
- * @property int $created_by_id
+ * @property int|null $created_by_id
  * @property InventoryItemType $type
  * @property string $name
  * @property string|null $description

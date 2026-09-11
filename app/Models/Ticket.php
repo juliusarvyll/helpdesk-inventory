@@ -241,6 +241,7 @@ class Ticket extends Model
     public function inventoryItems(): BelongsToMany
     {
         return $this->belongsToMany(InventoryItem::class, 'service_desk_ticket_inventory_items')
+            ->using(TicketInventoryItem::class)
             ->withPivot('quantity')
             ->withTimestamps();
     }

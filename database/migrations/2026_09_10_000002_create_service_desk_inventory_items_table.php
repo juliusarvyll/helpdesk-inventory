@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('service_desk_inventory_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('department_id')->constrained('service_desk_departments')->cascadeOnDelete();
-            $table->foreignId('created_by_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('created_by_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('type');
             $table->string('name');
             $table->text('description')->nullable();
