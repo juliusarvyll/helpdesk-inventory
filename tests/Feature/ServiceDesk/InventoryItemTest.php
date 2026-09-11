@@ -39,7 +39,7 @@ it('soft deletes an inventory item', function () {
 
     $item->delete();
 
-    expect($item->fresh())->toBeNull();
+    expect(InventoryItem::find($item->id))->toBeNull();
     expect(InventoryItem::withTrashed()->find($item->id))->not->toBeNull();
 });
 

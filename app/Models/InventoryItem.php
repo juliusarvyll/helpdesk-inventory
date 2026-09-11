@@ -77,22 +77,4 @@ class InventoryItem extends Model
             ->withPivot('quantity')
             ->withTimestamps();
     }
-
-    /** @return static|null */
-    public function fresh($with = [])
-    {
-        if (! $this->exists) {
-            return;
-        }
-
-        $instance = $this->setKeysForSaveQuery($this->newModelQuery())
-            ->first();
-
-        // If soft-deleted, return null (apply soft delete scope)
-        if ($instance && $instance->trashed()) {
-            return null;
-        }
-
-        return $instance ?: null;
-    }
 }
