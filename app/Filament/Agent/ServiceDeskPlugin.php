@@ -37,6 +37,10 @@ class ServiceDeskPlugin implements Plugin
             $resources['canned_response'] ?? Resources\CannedResponses\CannedResponseResource::class,
         ];
 
+        if ($this->hasServiceCatalog()) {
+            $enabled[] = $resources['service_request'] ?? Resources\ServiceRequests\ServiceRequestResource::class;
+        }
+
         $pages = [
             Pages\TicketQueuePage::class,
             Pages\AgentDashboardPage::class,

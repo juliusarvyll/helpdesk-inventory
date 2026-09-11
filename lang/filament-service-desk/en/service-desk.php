@@ -200,6 +200,9 @@ return [
         'publish' => 'Publish',
         'archive' => 'Archive',
         'add_inventory_item' => 'Add Item',
+        'update_status' => 'Update Status',
+        'approve' => 'Approve',
+        'reject' => 'Reject',
     ],
 
     'filters' => [

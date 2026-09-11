@@ -58,6 +58,7 @@ class ServiceDeskPlugin implements Plugin
         if ($this->hasServiceCatalog()) {
             $enabled[] = $resources['service'] ?? Resources\Services\ServiceResource::class;
             $enabled[] = $resources['service_category'] ?? Resources\ServiceCategories\ServiceCategoryResource::class;
+            $enabled[] = $resources['service_request'] ?? Resources\ServiceRequests\ServiceRequestResource::class;
         }
 
         $panel

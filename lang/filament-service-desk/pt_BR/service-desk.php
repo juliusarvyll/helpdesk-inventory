@@ -200,6 +200,9 @@ return [
         'publish' => 'Publicar',
         'archive' => 'Arquivar',
         'add_inventory_item' => 'Adicionar Item',
+        'update_status' => 'Atualizar Status',
+        'approve' => 'Aprovar',
+        'reject' => 'Rejeitar',
     ],
 
     'filters' => [

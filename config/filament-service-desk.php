@@ -9,6 +9,7 @@ use App\Filament\Admin\Resources\EscalationRules\EscalationRuleResource;
 use App\Filament\Admin\Resources\KbArticles\KbArticleResource;
 use App\Filament\Admin\Resources\KbCategories\KbCategoryResource;
 use App\Filament\Admin\Resources\ServiceCategories\ServiceCategoryResource;
+use App\Filament\Admin\Resources\ServiceRequests\ServiceRequestResource as AdminServiceRequestResource;
 use App\Filament\Admin\Resources\Services\ServiceResource;
 use App\Filament\Admin\Resources\SlaPolicies\SlaPolicyResource;
 use App\Filament\Admin\Resources\Tags\TagResource;
@@ -16,6 +17,7 @@ use App\Filament\Admin\Resources\Tickets\TicketResource;
 use App\Filament\Admin\Widgets\ServiceDeskOverviewWidget;
 use App\Filament\Admin\Widgets\SlaComplianceWidget;
 use App\Filament\Admin\Widgets\TicketsByDepartmentWidget;
+use App\Filament\Agent\Resources\ServiceRequests\ServiceRequestResource as AgentServiceRequestResource;
 use App\Filament\Agent\Widgets\AgentTicketStatsWidget;
 use App\Filament\Agent\Widgets\SlaBreachWidget;
 use App\Filament\App\Resources\InventoryItems\InventoryItemResource;
@@ -47,6 +49,7 @@ return [
             'kb_category' => KbCategoryResource::class,
             'service' => ServiceResource::class,
             'service_category' => ServiceCategoryResource::class,
+            'service_request' => AdminServiceRequestResource::class,
         ],
         'widgets' => [
             ServiceDeskOverviewWidget::class,
@@ -67,6 +70,7 @@ return [
         'resources' => [
             'ticket' => App\Filament\Agent\Resources\Tickets\TicketResource::class,
             'canned_response' => App\Filament\Agent\Resources\CannedResponses\CannedResponseResource::class,
+            'service_request' => AgentServiceRequestResource::class,
         ],
         'widgets' => [
             AgentTicketStatsWidget::class,
