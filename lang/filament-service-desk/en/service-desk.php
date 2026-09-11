@@ -167,6 +167,7 @@ return [
         'manage' => 'Manage',
         'info' => 'Information',
         'new_ticket' => 'New Ticket',
+        'linked_inventory_items' => 'Linked Inventory Items',
     ],
 
     'relations' => [

@@ -167,6 +167,7 @@ return [
         'manage' => 'Gerenciar',
         'info' => 'Informações',
         'new_ticket' => 'Novo Ticket',
+        'linked_inventory_items' => 'Itens de Inventário Vinculados',
     ],
 
     'relations' => [

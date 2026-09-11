@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources\Tickets\Schemas;
 
+use App\Enums\InventoryItemType;
 use App\Enums\TicketPriority;
 use App\Enums\TicketSource;
 use App\Enums\TicketStatus;
@@ -105,6 +106,24 @@ class TicketInfolist
                                     ->placeholder('—'),
                             ])
                             ->visible(fn (Ticket $record) => $record->first_response_due_at || $record->resolution_due_at),
+                        Schemas\Components\Section::make(__('filament-service-desk::service-desk.sections.linked_inventory_items'))
+                            ->schema([
+                                Infolists\Components\RepeatableEntry::make('inventoryItemsIncludingTrashed')
+                                    ->label('')
+                                    ->schema([
+                                        Infolists\Components\TextEntry::make('name')
+                                            ->label(__('filament-service-desk::service-desk.fields.name')),
+                                        Infolists\Components\TextEntry::make('type')
+                                            ->label(__('filament-service-desk::service-desk.fields.type'))
+                                            ->badge()
+                                            ->formatStateUsing(fn (InventoryItemType $state) => $state->label()),
+                                        Infolists\Components\TextEntry::make('pivot.quantity')
+                                            ->label(__('filament-service-desk::service-desk.fields.quantity'))
+                                            ->placeholder('—'),
+                                    ])
+                                    ->columns(3),
+                            ])
+                            ->visible(fn ($record) => $record->inventoryItemsIncludingTrashed()->exists()),
                     ])
                     ->columnSpan(['lg' => 1]),
             ])
