@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\Categories\CategoryResource;
 use App\Filament\Admin\Resources\Departments\DepartmentResource;
 use App\Filament\Admin\Resources\EmailChannels\EmailChannelResource;
 use App\Filament\Admin\Resources\EscalationRules\EscalationRuleResource;
+use App\Filament\Admin\Resources\InventoryItems\InventoryItemResource as AdminInventoryItemResource;
 use App\Filament\Admin\Resources\KbArticles\KbArticleResource;
 use App\Filament\Admin\Resources\KbCategories\KbCategoryResource;
 use App\Filament\Admin\Resources\ServiceCategories\ServiceCategoryResource;
@@ -41,6 +42,7 @@ return [
             'tag' => TagResource::class,
             'canned_response' => CannedResponseResource::class,
             'ticket' => TicketResource::class,
+            'inventory_item' => AdminInventoryItemResource::class,
             'sla_policy' => SlaPolicyResource::class,
             'escalation_rule' => EscalationRuleResource::class,
             'business_hours_schedule' => BusinessHoursScheduleResource::class,

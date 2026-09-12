@@ -11,6 +11,8 @@ use Filament\Infolists;
 use Filament\Schemas;
 use Filament\Schemas\Schema;
 
+use function filled;
+
 class TicketForm
 {
     public static function configure(Schema $schema): Schema
@@ -31,6 +33,35 @@ class TicketForm
                                     ->required()
                                     ->columnSpanFull(),
                             ]),
+                        Schemas\Components\Section::make(__('filament-service-desk::service-desk.fields.inventory_items'))
+                            ->schema([
+                                Forms\Components\Repeater::make('ticketInventoryItems')
+                                    ->relationship()
+                                    ->label(__('filament-service-desk::service-desk.fields.inventory_items'))
+                                    ->hiddenLabel()
+                                    ->defaultItems(0)
+                                    ->schema([
+                                        Forms\Components\Select::make('inventory_item_id')
+                                            ->label(__('filament-service-desk::service-desk.fields.inventory_item'))
+                                            ->relationship(
+                                                'inventoryItem',
+                                                'name',
+                                                fn ($query, Schemas\Components\Utilities\Get $get) => $query->where('department_id', $get('../../department_id'))
+                                            )
+                                            ->searchable()
+                                            ->preload()
+                                            ->distinct()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('quantity')
+                                            ->label(__('filament-service-desk::service-desk.fields.quantity'))
+                                            ->numeric()
+                                            ->minValue(0),
+                                    ])
+                                    ->columns(2)
+                                    ->addActionLabel(__('filament-service-desk::service-desk.actions.add_inventory_item')),
+                            ])
+                            ->visible(fn (Schemas\Components\Utilities\Get $get) => filled($get('department_id')))
+                            ->hiddenOn('edit'),
                     ])
                     ->columnSpan(['lg' => 2]),
 

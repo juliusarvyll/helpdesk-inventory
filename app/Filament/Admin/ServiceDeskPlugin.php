@@ -38,6 +38,7 @@ class ServiceDeskPlugin implements Plugin
             $resources['tag'] ?? Resources\Tags\TagResource::class,
             $resources['canned_response'] ?? Resources\CannedResponses\CannedResponseResource::class,
             $resources['ticket'] ?? Resources\Tickets\TicketResource::class,
+            $resources['inventory_item'] ?? Resources\InventoryItems\InventoryItemResource::class,
         ];
 
         if ($this->hasSla()) {
