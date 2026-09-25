@@ -15,12 +15,6 @@ class CategoryForm
             ->schema([
                 Schemas\Components\Section::make()
                     ->schema([
-                        Forms\Components\Select::make('department_id')
-                            ->label(__('filament-service-desk::service-desk.fields.department'))
-                            ->relationship('department', 'name')
-                            ->required()
-                            ->searchable()
-                            ->preload(),
                         Forms\Components\Select::make('parent_id')
                             ->label(__('filament-service-desk::service-desk.fields.parent_category'))
                             ->relationship('parent', 'name', fn ($query) => $query->whereNull('parent_id'))

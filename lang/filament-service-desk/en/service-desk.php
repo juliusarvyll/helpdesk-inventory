@@ -50,6 +50,7 @@ return [
         'department' => 'Department',
         'parent_category' => 'Parent Category',
         'category' => 'Category',
+        'subcategory' => 'Issue Subcategory',
         'status' => 'Status',
         'priority' => 'Priority',
         'source' => 'Source',
@@ -224,6 +225,8 @@ return [
     ],
 
     'messages' => [
+        'close_ticket_subcategory' => 'Select the issue subcategory that best describes this ticket before closing it.',
+        'close_ticket_with_action' => 'To close this ticket, use the Close Ticket button so the issue subcategory is recorded.',
         'auto_generated' => 'Auto-generated on save',
         'no_inventory_items' => 'No inventory items yet.',
         'no_department_assigned' => 'You are not assigned to a department yet. Contact an administrator to get started.',

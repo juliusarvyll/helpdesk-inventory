@@ -75,18 +75,26 @@ class TicketForm
                                     ->required()
                                     ->searchable()
                                     ->preload()
-                                    ->live()
-                                    ->afterStateUpdated(fn (Schemas\Components\Utilities\Set $set) => $set('category_id', null)),
+                                    ->live(),
                                 Forms\Components\Select::make('category_id')
                                     ->label(__('filament-service-desk::service-desk.fields.category'))
+                                    ->relationship('category', 'name', fn ($query) => $query->root()->ordered())
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable()
+                                    ->live()
+                                    ->afterStateUpdated(fn (Schemas\Components\Utilities\Set $set) => $set('subcategory_id', null)),
+                                Forms\Components\Select::make('subcategory_id')
+                                    ->label(__('filament-service-desk::service-desk.fields.subcategory'))
                                     ->relationship(
-                                        'category',
+                                        'subcategory',
                                         'name',
-                                        fn ($query, Schemas\Components\Utilities\Get $get) => $query->where('department_id', $get('department_id'))
+                                        fn ($query, Schemas\Components\Utilities\Get $get) => $query->where('parent_id', $get('category_id'))->ordered()
                                     )
                                     ->searchable()
                                     ->preload()
-                                    ->nullable(),
+                                    ->nullable()
+                                    ->visible(fn (Schemas\Components\Utilities\Get $get): bool => filled($get('category_id'))),
                                 Forms\Components\Select::make('status')
                                     ->label(__('filament-service-desk::service-desk.fields.status'))
                                     ->options(collect(TicketStatus::cases())->mapWithKeys(fn ($status) => [$status->value => $status->label()]))

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Agent\Resources\Tickets\Pages;
 
+use App\Filament\Agent\Resources\Tickets\Actions\CloseTicketAction;
 use App\Filament\Agent\Resources\Tickets\TicketResource;
 use App\Services\TicketService;
 use Filament\Actions;
@@ -16,6 +17,8 @@ class EditTicket extends EditRecord
     {
         return [
             Actions\ViewAction::make(),
+            CloseTicketAction::make()
+                ->after(fn () => $this->redirect(TicketResource::getUrl('view', ['record' => $this->getRecord()]))),
         ];
     }
 

@@ -90,11 +90,11 @@ class ServiceDeskSeeder extends Seeder
         }
 
         // Categories
-        $catHardware = Category::create(['department_id' => $itDept->id, 'name' => 'Hardware', 'slug' => 'hardware', 'description' => 'Hardware related issues', 'is_active' => true, 'sort_order' => 1]);
-        $catSoftware = Category::create(['department_id' => $itDept->id, 'name' => 'Software', 'slug' => 'software', 'description' => 'Software related issues', 'is_active' => true, 'sort_order' => 2]);
-        $catNetwork = Category::create(['department_id' => $itDept->id, 'name' => 'Network', 'slug' => 'network', 'description' => 'Network and connectivity', 'is_active' => true, 'sort_order' => 3]);
-        $catOnboarding = Category::create(['department_id' => $hrDept->id, 'name' => 'Onboarding', 'slug' => 'onboarding', 'description' => 'New employee onboarding', 'is_active' => true, 'sort_order' => 1]);
-        $catMaintenance = Category::create(['department_id' => $facilitiesDept->id, 'name' => 'Maintenance', 'slug' => 'maintenance', 'description' => 'Building maintenance requests', 'is_active' => true, 'sort_order' => 1]);
+        $catHardware = Category::create(['name' => 'Hardware', 'slug' => 'hardware', 'description' => 'Hardware related issues', 'is_active' => true, 'sort_order' => 1]);
+        $catSoftware = Category::create(['name' => 'Software', 'slug' => 'software', 'description' => 'Software related issues', 'is_active' => true, 'sort_order' => 2]);
+        $catNetwork = Category::create(['name' => 'Network', 'slug' => 'network', 'description' => 'Network and connectivity', 'is_active' => true, 'sort_order' => 3]);
+        $catOnboarding = Category::create(['name' => 'Onboarding', 'slug' => 'onboarding', 'description' => 'New employee onboarding', 'is_active' => true, 'sort_order' => 1]);
+        $catMaintenance = Category::create(['name' => 'Maintenance', 'slug' => 'maintenance', 'description' => 'Building maintenance requests', 'is_active' => true, 'sort_order' => 1]);
 
         // SLA Policies
         $slaCritical = SlaPolicy::create([

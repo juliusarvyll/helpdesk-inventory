@@ -50,6 +50,7 @@ return [
         'department' => 'Departamento',
         'parent_category' => 'Categoria Pai',
         'category' => 'Categoria',
+        'subcategory' => 'Subcategoria do Problema',
         'status' => 'Status',
         'priority' => 'Prioridade',
         'source' => 'Origem',
@@ -224,6 +225,8 @@ return [
     ],
 
     'messages' => [
+        'close_ticket_subcategory' => 'Selecione a subcategoria do problema que melhor descreve este chamado antes de fechá-lo.',
+        'close_ticket_with_action' => 'Para fechar este chamado, use o botão Fechar Ticket para registrar a subcategoria do problema.',
         'auto_generated' => 'Gerado automaticamente ao salvar',
         'no_inventory_items' => 'Nenhum item de inventário ainda.',
         'no_department_assigned' => 'Você ainda não está atribuído a um departamento. Contate um administrador para começar.',

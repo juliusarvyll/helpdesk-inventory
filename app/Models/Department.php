@@ -24,7 +24,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read Collection<int, Category> $categories
  * @property-read Collection<int, Ticket> $tickets
  * @property-read Collection<int, CannedResponse> $cannedResponses
  * @property-read Collection<int, EmailChannel> $emailChannels
@@ -56,12 +55,6 @@ class Department extends Model
         'is_active' => 'boolean',
         'sort_order' => 'integer',
     ];
-
-    /** @return HasMany<Category, $this> */
-    public function categories(): HasMany
-    {
-        return $this->hasMany(Category::class, 'department_id');
-    }
 
     /** @return HasMany<Ticket, $this> */
     public function tickets(): HasMany

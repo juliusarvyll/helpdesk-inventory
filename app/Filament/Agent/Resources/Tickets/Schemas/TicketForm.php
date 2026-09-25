@@ -41,6 +41,8 @@ class TicketForm
                                 Forms\Components\Select::make('status')
                                     ->label(__('filament-service-desk::service-desk.fields.status'))
                                     ->options(collect(TicketStatus::cases())->mapWithKeys(fn ($s) => [$s->value => $s->label()]))
+                                    ->disableOptionWhen(fn (string $value, Ticket $record): bool => $value === TicketStatus::Closed->value && $record->status !== TicketStatus::Closed)
+                                    ->helperText(__('filament-service-desk::service-desk.messages.close_ticket_with_action'))
                                     ->required(),
                                 Forms\Components\Select::make('priority')
                                     ->label(__('filament-service-desk::service-desk.fields.priority'))
@@ -57,6 +59,9 @@ class TicketForm
                                     ->placeholder('—'),
                                 Infolists\Components\TextEntry::make('category.name')
                                     ->label(__('filament-service-desk::service-desk.fields.category'))
+                                    ->placeholder('—'),
+                                Infolists\Components\TextEntry::make('subcategory.name')
+                                    ->label(__('filament-service-desk::service-desk.fields.subcategory'))
                                     ->placeholder('—'),
                                 Infolists\Components\TextEntry::make('created_at')
                                     ->label(__('filament-service-desk::service-desk.fields.created_at'))

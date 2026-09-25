@@ -71,6 +71,9 @@ class TicketInfolist
                                 Infolists\Components\TextEntry::make('category.name')
                                     ->label(__('filament-service-desk::service-desk.fields.category'))
                                     ->placeholder('—'),
+                                Infolists\Components\TextEntry::make('subcategory.name')
+                                    ->label(__('filament-service-desk::service-desk.fields.subcategory'))
+                                    ->placeholder('—'),
                                 Infolists\Components\TextEntry::make('created_at')
                                     ->label(__('filament-service-desk::service-desk.fields.created_at'))
                                     ->since(),

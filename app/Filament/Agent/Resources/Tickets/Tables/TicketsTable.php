@@ -4,10 +4,8 @@ namespace App\Filament\Agent\Resources\Tickets\Tables;
 
 use App\Enums\TicketPriority;
 use App\Enums\TicketStatus;
-use App\Models\Ticket;
-use App\Services\TicketService;
+use App\Filament\Agent\Resources\Tickets\Actions\CloseTicketAction;
 use Filament\Actions;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -70,13 +68,7 @@ class TicketsTable
             ->recordActions([
                 Actions\ViewAction::make(),
                 Actions\EditAction::make(),
-                Actions\Action::make('close')
-                    ->label(__('filament-service-desk::service-desk.actions.close'))
-                    ->icon(Heroicon::XCircle)
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->action(fn (Ticket $record) => app(TicketService::class)->close($record, auth()->guard()->user()))
-                    ->visible(fn (Ticket $record) => $record->isOpen()),
+                CloseTicketAction::make(),
             ]);
     }
 }

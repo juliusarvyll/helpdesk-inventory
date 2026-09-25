@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
  * @property string $reference_number
  * @property int $department_id
  * @property int|null $category_id
+ * @property int|null $subcategory_id
  * @property string $user_type
  * @property int $user_id
  * @property string|null $assigned_to_type
@@ -55,6 +56,7 @@ use Illuminate\Support\Str;
  * @property-read Model|\Eloquent|null $assignedTo
  * @property-read Department $department
  * @property-read Category|null $category
+ * @property-read Category|null $subcategory
  * @property-read Collection<int, TicketComment> $comments
  * @property-read Collection<int, TicketAttachment> $attachments
  * @property-read Collection<int, TicketHistory> $history
@@ -84,6 +86,7 @@ class Ticket extends Model
         'reference_number',
         'department_id',
         'category_id',
+        'subcategory_id',
         'user_type',
         'user_id',
         'assigned_to_type',
@@ -174,6 +177,12 @@ class Ticket extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    /** @return BelongsTo<Category, $this> */
+    public function subcategory(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'subcategory_id');
     }
 
     /** @return HasMany<TicketComment, $this> */

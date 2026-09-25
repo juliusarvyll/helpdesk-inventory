@@ -2,6 +2,7 @@
 
 namespace App\Filament\Agent\Resources\Tickets\Pages;
 
+use App\Filament\Agent\Resources\Tickets\Actions\CloseTicketAction;
 use App\Filament\Agent\Resources\Tickets\TicketResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -14,6 +15,7 @@ class ViewTicket extends ViewRecord
     {
         return [
             Actions\EditAction::make(),
+            CloseTicketAction::make(),
         ];
     }
 }

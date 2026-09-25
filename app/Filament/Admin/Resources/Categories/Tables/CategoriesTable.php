@@ -22,9 +22,6 @@ class CategoriesTable
                     ->label(__('filament-service-desk::service-desk.fields.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('department.name')
-                    ->label(__('filament-service-desk::service-desk.fields.department'))
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('children_count')
                     ->label(__('filament-service-desk::service-desk.relations.subcategories'))
                     ->counts('children')
@@ -46,9 +43,6 @@ class CategoriesTable
             ])
             ->defaultSort(fn (Builder $query) => $query->orderBy('sort_order')->orderBy('name'))
             ->filters([
-                Tables\Filters\SelectFilter::make('department_id')
-                    ->label(__('filament-service-desk::service-desk.fields.department'))
-                    ->relationship('department', 'name'),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label(__('filament-service-desk::service-desk.fields.is_active')),
             ])

@@ -13,6 +13,7 @@ use App\Events\TicketStatusChanged;
 use App\Events\TicketUpdated;
 use App\Exceptions\InvalidStatusTransitionException;
 use App\Exceptions\TicketNotFoundException;
+use App\Models\Category;
 use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -108,8 +109,17 @@ class TicketService
         return $ticket;
     }
 
-    public function close(Ticket $ticket, ?Model $performer = null): Ticket
+    /**
+     * Closes the ticket, optionally recording the issue subcategory it was resolved under.
+     * The ticket's category is aligned with the subcategory's parent so the two never disagree.
+     */
+    public function close(Ticket $ticket, ?Model $performer = null, ?Category $subcategory = null): Ticket
     {
+        if ($subcategory !== null) {
+            $ticket->subcategory()->associate($subcategory);
+            $ticket->category_id = $subcategory->parent_id;
+        }
+
         return $this->changeStatus($ticket, TicketStatus::Closed, $performer);
     }
 

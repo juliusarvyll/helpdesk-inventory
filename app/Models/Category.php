@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
- * @property int $department_id
  * @property int|null $parent_id
  * @property string $name
  * @property string $slug
@@ -26,7 +25,6 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
- * @property-read Department $department
  * @property-read Category|null $parent
  * @property-read Collection<int, Category> $children
  * @property-read Collection<int, Ticket> $tickets
@@ -44,7 +42,6 @@ class Category extends Model
     }
 
     protected $fillable = [
-        'department_id',
         'parent_id',
         'name',
         'slug',
@@ -57,12 +54,6 @@ class Category extends Model
         'is_active' => 'boolean',
         'sort_order' => 'integer',
     ];
-
-    /** @return BelongsTo<Department, $this> */
-    public function department(): BelongsTo
-    {
-        return $this->belongsTo(Department::class, 'department_id');
-    }
 
     /** @return BelongsTo<Category, $this> */
     public function parent(): BelongsTo

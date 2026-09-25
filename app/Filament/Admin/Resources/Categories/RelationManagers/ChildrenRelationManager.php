@@ -32,13 +32,6 @@ class ChildrenRelationManager extends RelationManager
         return $schema
             ->columns(2)
             ->schema([
-                Forms\Components\Select::make('department_id')
-                    ->label(__('filament-service-desk::service-desk.fields.department'))
-                    ->relationship('department', 'name')
-                    ->default(fn (): ?int => $this->getOwnerRecord()->department_id)
-                    ->required()
-                    ->searchable()
-                    ->preload(),
                 Forms\Components\TextInput::make('name')
                     ->label(__('filament-service-desk::service-desk.fields.name'))
                     ->required()
@@ -66,9 +59,6 @@ class ChildrenRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('filament-service-desk::service-desk.fields.name'))
                     ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('department.name')
-                    ->label(__('filament-service-desk::service-desk.fields.department'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('filament-service-desk::service-desk.fields.is_active'))
