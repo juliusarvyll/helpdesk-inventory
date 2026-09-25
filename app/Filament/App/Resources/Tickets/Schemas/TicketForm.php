@@ -34,6 +34,7 @@ class TicketForm
                                 fn ($query, Schemas\Components\Utilities\Get $get) => $query
                                     ->where('department_id', $get('department_id'))
                                     ->where('is_active', true)
+                                    ->whereNull('parent_id')
                             )
                             ->searchable()
                             ->preload()
