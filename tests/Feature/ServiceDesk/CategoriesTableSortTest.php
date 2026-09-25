@@ -7,7 +7,7 @@ use App\Models\Department;
 use Filament\Facades\Filament;
 use Livewire\Livewire;
 
-it('sorts categories with each parent followed by its own children', function () {
+it('sorts parent categories by sort order by default', function () {
     Filament::setCurrentPanel('admin');
 
     $admin = Admin::factory()->create();
@@ -18,32 +18,13 @@ it('sorts categories with each parent followed by its own children', function ()
         'name' => 'Software',
         'sort_order' => 2,
     ]);
-    $softwareChild = Category::factory()->create([
-        'department_id' => $department->id,
-        'parent_id' => $software->id,
-        'name' => 'Operating Systems',
-        'sort_order' => 1,
-    ]);
-
     $hardware = Category::factory()->create([
         'department_id' => $department->id,
         'name' => 'Hardware',
         'sort_order' => 1,
     ]);
-    $hardwareChild = Category::factory()->create([
-        'department_id' => $department->id,
-        'parent_id' => $hardware->id,
-        'name' => 'Laptops',
-        'sort_order' => 1,
-    ]);
 
     Livewire::actingAs($admin, 'admin')
         ->test(ListCategories::class)
-        ->sortTable('name')
-        ->assertCanSeeTableRecords([
-            $hardware,
-            $hardwareChild,
-            $software,
-            $softwareChild,
-        ], inOrder: true);
+        ->assertCanSeeTableRecords([$hardware, $software], inOrder: true);
 });

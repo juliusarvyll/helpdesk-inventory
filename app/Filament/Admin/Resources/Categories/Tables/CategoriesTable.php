@@ -9,21 +9,27 @@ use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesTable
 {
+    /**
+     * Lists only parent categories; each parent's children are managed from the
+     * Subcategories relation manager on its edit page.
+     */
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('parent_id'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('filament-service-desk::service-desk.fields.name'))
                     ->searchable()
-                    ->sortable(query: fn (Builder $query, string $direction) => self::sortByHierarchy($query, $direction)),
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('department.name')
                     ->label(__('filament-service-desk::service-desk.fields.department'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('parent.name')
-                    ->label(__('filament-service-desk::service-desk.fields.parent_category'))
-                    ->placeholder('—')
-                    ->sortable(query: fn (Builder $query, string $direction) => self::sortByHierarchy($query, $direction)),
+                Tables\Columns\TextColumn::make('children_count')
+                    ->label(__('filament-service-desk::service-desk.relations.subcategories'))
+                    ->counts('children')
+                    ->badge()
+                    ->sortable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->label(__('filament-service-desk::service-desk.fields.is_active'))
                     ->boolean()
@@ -38,17 +44,13 @@ class CategoriesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort(fn (Builder $query) => self::sortByHierarchy($query, 'asc'))
+            ->defaultSort(fn (Builder $query) => $query->orderBy('sort_order')->orderBy('name'))
             ->filters([
                 Tables\Filters\SelectFilter::make('department_id')
                     ->label(__('filament-service-desk::service-desk.fields.department'))
                     ->relationship('department', 'name'),
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label(__('filament-service-desk::service-desk.fields.is_active')),
-                Tables\Filters\Filter::make('root_only')
-                    ->label(__('filament-service-desk::service-desk.filters.root_only'))
-                    ->query(fn ($query) => $query->whereNull('parent_id'))
-                    ->toggle(),
             ])
             ->recordActions([
                 Actions\EditAction::make(),
@@ -59,30 +61,5 @@ class CategoriesTable
                     Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    /**
-     * Orders categories so each parent category is followed immediately by its own children,
-     * with parent groups ordered by the given direction and children always ordered under
-     * their parent by sort order and name.
-     */
-    private static function sortByHierarchy(Builder $query, string $direction): Builder
-    {
-        $direction = $direction === 'desc' ? 'desc' : 'asc';
-
-        $alreadyJoined = collect($query->getQuery()->joins)
-            ->contains(fn ($join) => $join->table === 'service_desk_categories as parent_categories');
-
-        if (! $alreadyJoined) {
-            $query->leftJoin('service_desk_categories as parent_categories', 'parent_categories.id', '=', 'service_desk_categories.parent_id');
-        }
-
-        return $query
-            ->orderByRaw("coalesce(parent_categories.sort_order, service_desk_categories.sort_order) {$direction}")
-            ->orderByRaw("coalesce(parent_categories.name, service_desk_categories.name) {$direction}")
-            ->orderBy('service_desk_categories.parent_id')
-            ->orderBy('service_desk_categories.sort_order')
-            ->orderBy('service_desk_categories.name')
-            ->select('service_desk_categories.*');
     }
 }

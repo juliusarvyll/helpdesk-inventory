@@ -46,7 +46,9 @@ class CategoryResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\ChildrenRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

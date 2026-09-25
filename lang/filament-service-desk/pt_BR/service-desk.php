@@ -186,6 +186,7 @@ return [
         'versions' => 'Versões',
         'feedback' => 'Feedback',
         'form_fields' => 'Campos do Formulário',
+        'subcategories' => 'Subcategorias',
     ],
 
     'actions' => [
