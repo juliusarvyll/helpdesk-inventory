@@ -21,6 +21,7 @@ class TicketForm
                         Forms\Components\Select::make('department_id')
                             ->label(__('filament-service-desk::service-desk.fields.department'))
                             ->relationship('department', 'name', fn ($query) => $query->where('is_active', true))
+                            ->default(fn (): ?int => auth()->guard()->user()?->department_id)
                             ->required()
                             ->searchable()
                             ->preload()

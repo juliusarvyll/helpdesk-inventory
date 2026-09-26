@@ -26,3 +26,12 @@ it('offers every active parent category regardless of the chosen department', fu
                 && ! array_key_exists($inactive->id, $options);
         });
 });
+
+it('prefills the department with the user\'s own department', function () {
+    $department = Department::factory()->create();
+    $user = User::factory()->create(['department_id' => $department->id]);
+
+    Livewire::actingAs($user)
+        ->test(CreateTicket::class)
+        ->assertSchemaStateSet(['department_id' => $department->id]);
+});
